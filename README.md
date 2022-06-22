@@ -1,6 +1,6 @@
 # 软件工程师学习清单
-受到[jwasham](https://github.com/jwasham)的[coding-interview-university](https://github.com/jwasham/coding-interview-university)启发，整理了一份自己学习清单：主要清单内容均来自 ** coding-interview-university **;
-结合自己的学习过程做了些修改, 删除了一些收费课程，并添加了一些笔记。
+清单来源：https://github.com/jwasham/coding-interview-university/blob/main/translations/README-cn.md  
+结合自己的学习过程做了写整理
 
 ---
 
@@ -29,7 +29,6 @@
     - [二叉查找树（Binary search trees）：BSTs](#二叉查找树binary-search-treesbsts)
     - [堆（Heap） / 优先级队列（Priority Queue） / 二叉堆（Binary Heap）](#堆heap--优先级队列priority-queue--二叉堆binary-heap)
     - [平衡查找树（Balanced search trees）（基本概念，非细节）](#平衡查找树balanced-search-trees)
-    - 遍历：前序、中序、后序、BFS、DFS
 - [排序](#排序sorting)
     - 选择排序（selection）
     - 插入排序（insertion）
@@ -541,8 +540,6 @@
         - [x] 完全二叉树 : 一棵深度为d的二叉树，除d层以外的其它各层节点数目均已达最大值，且第d层所有节点从左向右连续地紧密排列
         - [x] 平衡二叉树(AVL树) : 当且仅当任何节点的两棵子树的高度差不大于1的二叉树
         - [x] Binary Search Tree
-        - [ ] 红黑树
-        - [ ] B树/B+树
     - [x] 深度&高度:  
         - 深度：任意子节点到根节点的唯一路径长度  
         - 高度：全部叶子节点到根节点路径中最长路径的长度
@@ -562,9 +559,10 @@
             - 后序遍历（DFS：左、右、节点本身）
             - 先序遍历（DFS：节点本身、左、右）
 
+
 - ### 二叉查找树（Binary search trees）：BSTs
     - [x] [二叉查找树概览（视频）](https://www.youtube.com/watch?v=x6At0nzX92o&index=1&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
-    - [x] [MIT（视频）](https://www.youtube.com/watch?v=9Jry5-82I68)
+    - [x] [MIT视频课程（视频）](https://www.youtube.com/watch?v=9Jry5-82I68)
     - C/C++:
         - [ ] [二叉查找树 —— 在 C/C++ 中实现（视频）](https://www.youtube.com/watch?v=COZK7NATh4k&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=28)
         - [ ] [BST 的实现 —— 在堆栈和堆中的内存分配（视频）](https://www.youtube.com/watch?v=hWokyBoo0aI&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=29)
@@ -576,7 +574,7 @@
         - [ ] [判断一棵二叉树是否为二叉查找树（视频）](https://www.youtube.com/watch?v=yEwSGhSsT0U&index=35&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
         - [ ] [从二叉查找树中删除一个节点（视频）](https://www.youtube.com/watch?v=gcULXE7ViZw&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=36)
         - [ ] [二叉查找树中序遍历的后继者（视频）](https://www.youtube.com/watch?v=5cPbNCrdotA&index=37&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
-    - [ ] 实现：
+    - [ ] **[实现](https://github.com/kexinchu/algo/blob/master/cplusplus/binary_search_tree.cpp)**：
         - [x] insert         // 往树上插值
         - [x] get_node_count // 查找树上的节点数
         - [x] print_values   // 实现 BFS<层序> DFS<前序，中序，后序>
@@ -585,22 +583,30 @@
         - [x] get_min        // 返回树上的最小值
         - [x] get_max        // 返回树上的最大值
         - [ ] is_binary_search_tree
-        - [ ] delete_value
+        - [x] delete_value
         - [ ] get_successor  // 返回给定值的后继者，若没有则返回-1
 
-- ### 平衡查找树 (Balanced search trees) <选学>
-    - [ ] 掌握至少一种平衡查找树（并懂得如何实现)
-    - [ ] “在各种平衡查找树当中，AVL树和2-3树已经成为了过去，而红黑树（red-black trees）看似变得越来越受人青睐。这种令人特别感兴趣的数据结构，亦称伸展树（splay tree）。它可以自我管理，且会使用轮换来移除任何访问过根节点的键。” —— Skiena
+- ### 平衡查找树 (Balanced search trees)
+    - [ ] 掌握至少一种平衡查找树(并懂得如何实现 - 主要关注插入，删除之后的自平衡方法)
+    - “在各种平衡查找树当中，AVL树和2-3树已经成为了过去，而红黑树（red-black trees），伸展树（splay tree）看似变得越来越受人青睐。
     - 因此，在各种各样的平衡查找树当中，我选择了伸展树来实现。虽然，通过我的阅读，我发现在面试中并不会被要求实现一棵平衡查找树。但是，为了胜人一筹，我们还是应该看看如何去实现。在阅读了大量关于红黑树的代码后，我才发现伸展树的实现确实会使得各方面更为高效。
         - 伸展树：插入、查找、删除函数的实现，而如果你最终实现了红黑树，那么请尝试一下：
         - 跳过删除函数，直接实现搜索和插入功能
     - [x] [自平衡二叉查找树](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)  
     - [x] **[AVL 树](https://zh.m.wikipedia.org/zh-hans/AVL%E6%A0%91)**
         - 实际中：我能告诉你的是，该种树并无太多的用途，但我能看到有用的地方在哪里：AVL 树是另一种平衡查找树结构。其可支持时间复杂度为 O(log n) 的查询、插入及删除。它比红黑树严格意义上更为平衡，从而导致插入和删除更慢，但遍历却更快。正因如此，才彰显其结构的魅力。只需要构建一次，就可以在不重新构造的情况下读取，适合于实现诸如语言字典（或程序字典，如一个汇编程序或解释程序的操作码）。
-        - 高度平衡树: 任一节点的两个子树的高度差不超过1;
-        ![LL/RR/RL/LR](https://zh.m.wikipedia.org/zh-hans/AVL%E6%A0%91#/media/File%3ATree_Rebalancing.png)
-        - [x] 自平衡的实现
+        - 高度平衡树: 任一节点的两个子树的高度差不超过1;  
+        - LL/RR/LR/RL  
+        ![LL/RR/RL/LR](https://github.com/kexinchu/coding-interview-university/avl-tree_rebalancing.png)
+        - [x] **自平衡的实现**
         ```
+        // 节点左子树高度 > 右子树高度
+        // LL: 左子树的左子树高度 > 左子树的右子树  =>  右旋
+        // LR: 左子树的右子树高度 > 左子树的左子树  =>  先对左子树左旋，转换成LL，再右旋
+        // 节点右子树高度 > 左子树高度
+        // RR: 右子树的右子树高度 > 右子树的左子树  =>  左旋
+        // RL: 右子树的左子树高度 > 右子树的右子树  =>  先对右子树右旋，转换成RR，再左旋
+        
         NodePtr left_left_rotation(NodePtr node) {
             NodePtr p = node->left;
             node->left = p->right;
@@ -623,8 +629,10 @@
             return right_right_rotation(node);
         }
         ```
-    - [ ] **[伸展树](https://zh.wikipedia.org/wiki/%E4%BC%B8%E5%B1%95%E6%A0%91)**
-        - 实际中：伸展树一般用于缓存、内存分配者、路由器、垃圾回收者、数据压缩、ropes（字符串的一种替代品，用于存储长串的文本字符）、Windows NT（虚拟内存、网络及文件系统）等的实现。
+        - [ ] 实现代码
+        
+    - [ ] **[伸展树](https://zh.wikipedia.org/wiki/%E4%BC%B8%E5%B1%95%E6%A0%91)**  
+        - 实际中：伸展树一般用于缓存、内存分配者、路由器、垃圾回收者、数据压缩、ropes(字符串的一种替代品，用于存储长串的文本字符)、Windows NT（虚拟内存、网络及文件系统）等的实现。
         - 定义：假设想要对一个二叉查找树执行一系列的查找操作，为了使整个查找时间更小，被查频率高的那些条目就应当经常处于靠近树根的位置。于是想到设计一个简单方法，在每次查找之后对树进行调整，把被查找的条目搬移到离树根近一些的地方。
         
         - [CS 61B：伸展树（Splay trees）（视频）](https://www.youtube.com/watch?v=Najzh1rYQTo&index=23&list=PL-XXv-cvA_iAlnI-BQr9hjqADPBtujFJd)
@@ -632,14 +640,46 @@
             - 该教程会过于学术，但请观看到最后的10分钟以确保掌握。
             - [视频](https://www.youtube.com/watch?v=QnPl_Y6EqMo)
             
-    - [ ] **红黑树**
-        - 这些是2-3棵树的翻译（请参见下文）。
-        - 实际中：红黑树提供了在最坏情况下插入操作、删除操作和查找操作的时间保证。这些时间值的保障不仅对时间敏感型应用有用，例如实时应用，还对在其他数据结构中块的构建非常有用，而这些数据结构都提供了最坏情况下的保障；例如，许多用于计算几何学的数据结构都可以基于红黑树，而目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了该种树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
+    - [ ] **[红黑树](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)**
+        - [x] 定义:满足以下四个条件即为红黑树
+        ```
+        1，根节点为黑;
+        2，叶子节点为黑色 null节点;
+        3，约束红节点不能相邻放置;
+        4，约束根->叶子路径中黑节点个数相等
+        ```
+        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/red-black_tree_example.png)
+        - [x] 实际中，**红黑树的高度不会超过 2*log2n；这保证了最坏情况下插入、删除和查找操作的时间复杂度**。
+        - [x] 适用场景：用到动态插入，删除，查找数据的场景都可以 —— 例如，目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了红黑树树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
         - [Aduni —— 算法 —— 课程4（该链接直接跳到开始部分）（视频）](https://youtu.be/1W3x0f_RmUo?list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&t=3871)
         - [Aduni —— 算法 —— 课程5（视频）](https://www.youtube.com/watch?v=hm2GHwyKF1o&list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&index=5)
-        - [黑树（Black Tree）](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)
-        - [二分查找及红黑树的介绍](https://www.topcoder.com/community/data-science/data-science-tutorials/an-introduction-to-binary-search-and-red-black-trees/)
-        
+        - [二分查找及红黑树的介绍](https://www.topcoder.com/community/data-science/data-science-tutorials/an-introduction-to-binary-search-and-red-black-trees/)  
+        - [ ] **[代码实现](https://github.com/william-zk/RB_Tree)**
+            - 插入操作 - 插入节点设为红色 & 新插入的节点都放在叶子节点上
+                - 1，插入节点为根节点，直接变颜色为黑
+                - 2，插入节点父节点颜色为黑色，什么都不用做
+                - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
+                ![插入-case3](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case3.png)
+                - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>  
+                ![插入-case4](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case4.png)
+                - 5，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的左子节点  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色  
+                ![插入-case5](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case5.png)
+            - 删除操作
+                - 1，待删除节点的三种情况分类
+                ```
+                1，待删除节点为叶子节点；
+                2，待删除节点只有一个子节点，(此时根据红黑树定义4，其子节点为红色，且不可能是子树)；
+                3，待删除节点两个子节点/子树均非空，交换待删除节点与其后继节点，构造情况1或情况2；
+                
+                // 情况2，可以交换删除节点与子节点，再删除子节点即可
+                // 情况1较复杂，涉及删除后的再平衡
+                ```
+                - 2，删除叶子节点
+                ![删除叶子节点](https://github.com/kexinchu/coding-interview-university/red-black-tree_delete-tree-pic.png)
+                - 2.1 下图展示了删除叶子节点的几种情况(待删除节点是父节点右子节点时)
+                ![示例](https://github.com/kexinchu/coding-interview-university/red-black-tree_delete-left.png)
+                
+                
     - [ ] **2-3查找树**
         - 实际中：2-3树的元素插入非常快速，但却有着查询慢的代价（因为相比较 AVL 树来说，其高度更高）。
         - 你会很少用到2-3树。这是因为，其实现过程中涉及到不同类型的节点。因此，人们更多地会选择红黑树。
