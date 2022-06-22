@@ -648,7 +648,7 @@
         3，约束红节点不能相邻放置;
         4，约束根->叶子路径中黑节点个数相等
         ```
-        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png)
+        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png){:width="80%"}
         - [x] 实际中，**红黑树的高度不会超过 2*log2n；这保证了最坏情况下插入、删除和查找操作的时间复杂度**。
         - [x] 适用场景：用到动态插入，删除，查找数据的场景都可以 —— 例如，目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了红黑树树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
         - [Aduni —— 算法 —— 课程4（该链接直接跳到开始部分）（视频）](https://youtu.be/1W3x0f_RmUo?list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&t=3871)
@@ -659,11 +659,11 @@
                 - 1，插入节点为根节点，直接变颜色为黑
                 - 2，插入节点父节点颜色为黑色，什么都不用做
                 - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
-                ![插入-case3](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case3.png)
+                ![插入-case3](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case3.png)
                 - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>  
-                ![插入-case4](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case4.png)
+                ![插入-case4](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png)
                 - 5，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的左子节点  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色  
-                ![插入-case5](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case5.png)
+                ![插入-case5](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case5.png)
             - 删除操作
                 - 1，待删除节点的三种情况分类
                 ```
