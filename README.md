@@ -648,7 +648,7 @@
         3，约束红节点不能相邻放置;
         4，约束根->叶子路径中黑节点个数相等
         ```
-        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png){:width="80%"}
+        ![红黑树sample-w150](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png)
         - [x] 实际中，**红黑树的高度不会超过 2*log2n；这保证了最坏情况下插入、删除和查找操作的时间复杂度**。
         - [x] 适用场景：用到动态插入，删除，查找数据的场景都可以 —— 例如，目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了红黑树树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
         - [Aduni —— 算法 —— 课程4（该链接直接跳到开始部分）（视频）](https://youtu.be/1W3x0f_RmUo?list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&t=3871)
