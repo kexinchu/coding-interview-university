@@ -597,7 +597,7 @@
         - 实际中：我能告诉你的是，该种树并无太多的用途，但我能看到有用的地方在哪里：AVL 树是另一种平衡查找树结构。其可支持时间复杂度为 O(log n) 的查询、插入及删除。它比红黑树严格意义上更为平衡，从而导致插入和删除更慢，但遍历却更快。正因如此，才彰显其结构的魅力。只需要构建一次，就可以在不重新构造的情况下读取，适合于实现诸如语言字典（或程序字典，如一个汇编程序或解释程序的操作码）。
         - 高度平衡树: 任一节点的两个子树的高度差不超过1;  
         - LL/RR/LR/RL  
-        ![LL/RR/RL/LR](https://github.com/kexinchu/coding-interview-university/avl-tree_rebalancing.png)
+        ![LL/RR/RL/LR](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/avl-tree_rebalancing.png)
         - [x] **自平衡的实现**
         ```
         // 节点左子树高度 > 右子树高度
@@ -648,7 +648,7 @@
         3，约束红节点不能相邻放置;
         4，约束根->叶子路径中黑节点个数相等
         ```
-        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/red-black_tree_example.png)
+        ![红黑树-sample](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png)
         - [x] 实际中，**红黑树的高度不会超过 2*log2n；这保证了最坏情况下插入、删除和查找操作的时间复杂度**。
         - [x] 适用场景：用到动态插入，删除，查找数据的场景都可以 —— 例如，目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了红黑树树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
         - [Aduni —— 算法 —— 课程4（该链接直接跳到开始部分）（视频）](https://youtu.be/1W3x0f_RmUo?list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&t=3871)
@@ -659,11 +659,11 @@
                 - 1，插入节点为根节点，直接变颜色为黑
                 - 2，插入节点父节点颜色为黑色，什么都不用做
                 - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
-                ![插入-case3](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case3.png)
+                ![插入-case3](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case3.png)
                 - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>  
-                ![插入-case4](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case4.png)
+                ![插入-case4](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case4.png)
                 - 5，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的左子节点  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色  
-                ![插入-case5](https://github.com/kexinchu/coding-interview-university/red-black_tree_insert-case5.png)
+                ![插入-case5](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_insert-case5.png)
             - 删除操作
                 - 1，待删除节点的三种情况分类
                 ```
@@ -675,9 +675,9 @@
                 // 情况1较复杂，涉及删除后的再平衡
                 ```
                 - 2，删除叶子节点
-                ![删除叶子节点](https://github.com/kexinchu/coding-interview-university/red-black-tree_delete-tree-pic.png)
+                ![删除叶子节点](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-tree-pic.png)
                 - 2.1 下图展示了删除叶子节点的几种情况(待删除节点是父节点右子节点时)
-                ![示例](https://github.com/kexinchu/coding-interview-university/red-black-tree_delete-left.png)
+                ![示例](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png)
                 
                 
     - [ ] **2-3查找树**
