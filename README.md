@@ -660,11 +660,17 @@
                 - 1，插入节点为根节点，直接变颜色为黑
                 - 2，插入节点父节点颜色为黑色，什么都不用做
                 - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
+
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case3.png" width="200px">     
+                
                 - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>     
+
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png" width="200px">    
+
                 - 5，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的左子节点  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色     
+
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png" width="200px">    
+
             - 删除操作
                 - 1，待删除节点的三种情况分类
                 ```
@@ -677,20 +683,25 @@
                 ```
                 - 2，删除叶子节点   
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-tree-pic.png" width="500px">   
+
                 - 2.1 下图展示了删除叶子节点的几种情况(待删除节点是父节点右子节点时)
                     - case1, P的兄弟节点B为红色
                     - case2, B为黑色，且B无子节点 <需要re-balance>
                     - case3, B为黑色，B只有左子节点BL
                     - case4, B为黑色，B只有右子节点BR
                     - case5, B为黑色，且有2个子节点   
+
                     <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png" width="200px">   
+
                 - 3，重新平衡
                    - 仅当删除叶子节点的case2时才会破坏平衡，以case2中的父节点B为关注节点开始逐步向上re-balance
                    - case1, 关注节点P的兄弟节点B为红
                    - case2, 兄弟节点B为黑色，且其左右子节点均为黑
                    - case3, B为黑色，且其左子节点BL为红，右子节点BR为黑
                    - case4, B为黑色，BR为红色，BL任意   
+
                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-re-balance-pic.jpg" width="350px">   
+
 
     - [ ] **2-3查找树**
         - 实际中：2-3树的元素插入非常快速，但却有着查询慢的代价（因为相比较 AVL 树来说，其高度更高）。
