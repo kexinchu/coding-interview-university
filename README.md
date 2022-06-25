@@ -27,6 +27,7 @@
 - [树（Trees）](#树trees)
     - [树 —— 笔记 & 背景](#树--笔记--背景)
     - [二叉查找树（Binary search trees）：BSTs](#二叉查找树binary-search-treesbsts)
+    - [平衡查找树 (Balanced search trees)](#平衡查找树balanced-search-trees)
     - [堆（Heap） / 优先级队列（Priority Queue） / 二叉堆（Binary Heap）](#堆heap--优先级队列priority-queue--二叉堆binary-heap)
     - [平衡查找树（Balanced search trees）（基本概念，非细节）](#平衡查找树balanced-search-trees)
 - [排序](#排序sorting)
@@ -589,7 +590,6 @@
 - ### 平衡查找树 (Balanced search trees)
     - [ ] 掌握至少一种平衡查找树(并懂得如何实现 - 主要关注插入，删除之后的自平衡方法)
     - “在各种平衡查找树当中，AVL树和2-3树已经成为了过去，而红黑树（red-black trees），伸展树（splay tree）看似变得越来越受人青睐。
-    - 因此，在各种各样的平衡查找树当中，我选择了伸展树来实现。虽然，通过我的阅读，我发现在面试中并不会被要求实现一棵平衡查找树。但是，为了胜人一筹，我们还是应该看看如何去实现。在阅读了大量关于红黑树的代码后，我才发现伸展树的实现确实会使得各方面更为高效。
         - 伸展树：插入、查找、删除函数的实现，而如果你最终实现了红黑树，那么请尝试一下：
         - 跳过删除函数，直接实现搜索和插入功能
     - [x] [自平衡二叉查找树](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)  
@@ -633,7 +633,32 @@
         
     - [ ] **[伸展树](https://zh.wikipedia.org/wiki/%E4%BC%B8%E5%B1%95%E6%A0%91)**  
         - 实际中：伸展树一般用于缓存、内存分配者、路由器、垃圾回收者、数据压缩、ropes(字符串的一种替代品，用于存储长串的文本字符)、Windows NT（虚拟内存、网络及文件系统）等的实现。
-        - 定义：假设想要对一个二叉查找树执行一系列的查找操作，为了使整个查找时间更小，被查频率高的那些条目就应当经常处于靠近树根的位置。于是想到设计一个简单方法，在每次查找之后对树进行调整，把被查找的条目搬移到离树根近一些的地方。
+        - 能在均摊{\displaystyle O(\log n)}O(\log n)的时间内完成基于伸展（Splay）操作的插入、查找、修改和删除操作
+        - 定义&原理：参考LRU，假设想要对一个二叉查找树执行一系列的查找操作，为了使整个查找时间更小，被查频率高的那些条目就应当经常处于靠近树根的位置。=> 于是想到设计一个简单方法，在每次查找/插入之后对树进行调整，把被查找/新插入的条目搬移到离树根近一些的地方。
+        - 优点：存储所需的内存少 —— 伸展树无需记录额外的什么值来维护树的信息，相对于其他平衡树，内存占用要小。(PS: AVL树需要记录节点高度，红黑树需要记录节点颜色)
+        - 代码实现:
+            - 伸展(Splay)操作：当节点x被访问后，将x移动到根节点
+            ```
+            // 利用一系列的左旋(Zag)和右旋(Zig)操作实现
+            // 每次旋转都由三个因素决定：
+            //   x是其父节点p的左儿子还是右儿子；
+            //   p是否为根；
+            //   p是其父节点g（x的祖父节点）的左儿子还是右儿子。
+            可以分为一下6中情况
+            case1, Zig: x是p的左子节点，p为根节点，右旋
+            case2, Zig-Zig: x是p的左子节点，p为g的左子节点，先绕g右旋，再绕p右旋
+            case3, Zig-Zag: x是p的左子节点，p为g的右子节点，先绕p右旋，再绕g左旋
+            case4, Zag: x是p的右子节点，p为根节点，左旋
+            case5, Zag-Zag: x是p的右子节点，p为g的右子节点，先绕g左旋，再绕p左旋
+            case6, Zag-Zig: x是p的右子节点，p为g的左子节点，先绕p左旋，再绕g右旋
+            ```
+            - 插入: 先插入，再Splay
+            - 删除: 先Splay到根节点 => 删除根节点
+            ```
+            case1, 只有一个子节点，直接用该子节点替换根节点，删除根节点
+            case2, 左右子树均存在，将左子树中的最大节点Splay到左子节点处(此时左子节点无右孩子)，把根结点的右孩子挂接到左孩子的右孩子位置,删除跟节点
+            ```
+            - 查找: 先查找，再Splay
         
         - [CS 61B：伸展树（Splay trees）（视频）](https://www.youtube.com/watch?v=Najzh1rYQTo&index=23&list=PL-XXv-cvA_iAlnI-BQr9hjqADPBtujFJd)
         - MIT 教程：伸展树（Splay trees）：
@@ -662,7 +687,7 @@
                 - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
 
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case3.png" width="200px">     
-                
+
                 - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>     
 
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png" width="200px">    
@@ -701,38 +726,6 @@
                    - case4, B为黑色，BR为红色，BL任意   
 
                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-re-balance-pic.jpg" width="350px">   
-
-
-    - [ ] **2-3查找树**
-        - 实际中：2-3树的元素插入非常快速，但却有着查询慢的代价（因为相比较 AVL 树来说，其高度更高）。
-        - 你会很少用到2-3树。这是因为，其实现过程中涉及到不同类型的节点。因此，人们更多地会选择红黑树。
-        - [2-3树的直感与定义（视频）](https://www.youtube.com/watch?v=C3SsdUqasD4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=2)
-        - [2-3树的二元观点](https://www.youtube.com/watch?v=iYvBtGKsqSg&index=3&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
-        - [2-3树（学生叙述）（视频）](https://www.youtube.com/watch?v=TOb1tuEZ2X4&index=5&list=PLUl4u3cNGP6317WaSNfmCvGym2ucw3oGp)
-        
-    - [ ] **2-3-4树 (亦称2-4树)**
-        - 实际中：对于每一棵2-4树，都有着对应的红黑树来存储同样顺序的数据元素。在2-4树上进行插入及删除操作等同于在红黑树上进行颜色翻转及轮换。这使得2-4树成为一种用于掌握红黑树背后逻辑的重要工具。这就是为什么许多算法引导文章都会在介绍红黑树之前，先介绍2-4树，尽管**2-4树在实际中并不经常使用**。
-        - [CS 61B Lecture 26：平衡查找树（视频）](https://www.youtube.com/watch?v=zqrqYXkth6Q&index=26&list=PL4BBB74C7D2A1049C)
-        - [自底向上的2-4树（视频）](https://www.youtube.com/watch?v=DQdMYevEyE4&index=4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
-        - [自顶向下的2-4树（视频）](https://www.youtube.com/watch?v=2679VQ26Fp4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=5)
-        
-    - [ ] **N 叉树（K 叉树、M 叉树）**
-        - 注意：N 或 K 指的是分支系数（即树的最大分支数）：
-        - 二叉树是一种分支系数为2的树
-        - 2-3树是一种分支系数为3的树
-        - [K 叉树](https://en.wikipedia.org/wiki/K-ary_tree)
-        
-    - [ ] **B 树**
-        - 有趣的是：为啥叫 B 仍然是一个神秘。因为 B 可代表波音（Boeing）、平衡（Balanced）或 Bayer（联合创造者）
-        - 实际中：B 树会被广泛适用于数据库中，而现代大多数的文件系统都会使用到这种树（或变种)。除了运用在数据库中，B 树也会被用于文件系统以快速访问一个文件的任意块。但存在着一个基本的问题，那就是如何将文件块 i 转换成一个硬盘块（或一个柱面-磁头-扇区）上的地址。
-        - [B 树](https://en.wikipedia.org/wiki/B-tree)
-        - [B 树数据结构](http://btechsmartclass.com/data_structures/b-trees.html)
-        - [B 树的介绍（视频）](https://www.youtube.com/watch?v=I22wEC1tTGo&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=6)
-        - [B 树的定义及其插入操作（视频）](https://www.youtube.com/watch?v=s3bCdZGrgpA&index=7&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
-        - [B 树的删除操作（视频）](https://www.youtube.com/watch?v=svfnVhJOfMc&index=8&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
-        - [MIT 6.851 —— 内存层次模块（Memory Hierarchy Models）（视频）](https://www.youtube.com/watch?v=V3omVLzI0WE&index=7&list=PLUl4u3cNGP61hsJNdULdudlRL493b-XZf)
-            - 覆盖有高速缓存参数无关型（cache-oblivious）B 树和非常有趣的数据结构
-            - 头37分钟讲述的很专业，或许可以跳过（B 指块的大小、即缓存行的大小）
 
 - ### 堆（Heap） / 优先级队列（Priority Queue） / 二叉堆（Binary Heap）
     - 可视化是一棵树，但通常是以线性的形式存储（数组、链表）
@@ -1099,6 +1092,39 @@
     - [ ] [TopCoder —— 使用字典树](https://www.topcoder.com/community/data-science/data-science-tutorials/using-tries/)
     - [ ] [标准教程（现实中的用例）（视频）](https://www.youtube.com/watch?v=TJ8SkcUSdbU)
     - [ ] [MIT，高阶数据结构，字符串（视频中间有点困难）（视频）](https://www.youtube.com/watch?v=NinWEPPrkDQ&index=16&list=PLUl4u3cNGP61hsJNdULdudlRL493b-XZf)
+
+- ### 平衡搜索树
+    - **AVL树，伸展树，红黑树**: 详见二叉树章节
+    - [ ] **2-3查找树**
+        - 实际中：2-3树的元素插入非常快速，但却有着查询慢的代价（因为相比较 AVL 树来说，其高度更高）。
+        - 你会很少用到2-3树。这是因为，其实现过程中涉及到不同类型的节点。因此，人们更多地会选择红黑树。
+        - [2-3树的直感与定义（视频）](https://www.youtube.com/watch?v=C3SsdUqasD4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=2)
+        - [2-3树的二元观点](https://www.youtube.com/watch?v=iYvBtGKsqSg&index=3&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
+        - [2-3树（学生叙述）（视频）](https://www.youtube.com/watch?v=TOb1tuEZ2X4&index=5&list=PLUl4u3cNGP6317WaSNfmCvGym2ucw3oGp)
+        
+    - [ ] **2-3-4树 (亦称2-4树)**
+        - 实际中：对于每一棵2-4树，都有着对应的红黑树来存储同样顺序的数据元素。在2-4树上进行插入及删除操作等同于在红黑树上进行颜色翻转及轮换。这使得2-4树成为一种用于掌握红黑树背后逻辑的重要工具。这就是为什么许多算法引导文章都会在介绍红黑树之前，先介绍2-4树，尽管**2-4树在实际中并不经常使用**。
+        - [CS 61B Lecture 26：平衡查找树（视频）](https://www.youtube.com/watch?v=zqrqYXkth6Q&index=26&list=PL4BBB74C7D2A1049C)
+        - [自底向上的2-4树（视频）](https://www.youtube.com/watch?v=DQdMYevEyE4&index=4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
+        - [自顶向下的2-4树（视频）](https://www.youtube.com/watch?v=2679VQ26Fp4&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=5)
+        
+    - [ ] **N 叉树（K 叉树、M 叉树）**
+        - 注意：N 或 K 指的是分支系数（即树的最大分支数）：
+        - 二叉树是一种分支系数为2的树
+        - 2-3树是一种分支系数为3的树
+        - [K 叉树](https://en.wikipedia.org/wiki/K-ary_tree)
+        
+    - [ ] **B 树**
+        - 有趣的是：为啥叫 B 仍然是一个神秘。因为 B 可代表波音（Boeing）、平衡（Balanced）或 Bayer（联合创造者）
+        - 实际中：B 树会被广泛适用于数据库中，而现代大多数的文件系统都会使用到这种树（或变种)。除了运用在数据库中，B 树也会被用于文件系统以快速访问一个文件的任意块。但存在着一个基本的问题，那就是如何将文件块 i 转换成一个硬盘块（或一个柱面-磁头-扇区）上的地址。
+        - [B 树](https://en.wikipedia.org/wiki/B-tree)
+        - [B 树数据结构](http://btechsmartclass.com/data_structures/b-trees.html)
+        - [B 树的介绍（视频）](https://www.youtube.com/watch?v=I22wEC1tTGo&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6&index=6)
+        - [B 树的定义及其插入操作（视频）](https://www.youtube.com/watch?v=s3bCdZGrgpA&index=7&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
+        - [B 树的删除操作（视频）](https://www.youtube.com/watch?v=svfnVhJOfMc&index=8&list=PLA5Lqm4uh9Bbq-E0ZnqTIa8LRaL77ica6)
+        - [MIT 6.851 —— 内存层次模块（Memory Hierarchy Models）（视频）](https://www.youtube.com/watch?v=V3omVLzI0WE&index=7&list=PLUl4u3cNGP61hsJNdULdudlRL493b-XZf)
+            - 覆盖有高速缓存参数无关型（cache-oblivious）B 树和非常有趣的数据结构
+            - 头37分钟讲述的很专业，或许可以跳过（B 指块的大小、即缓存行的大小）
 
 - ### 浮点数
 
