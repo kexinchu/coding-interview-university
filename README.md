@@ -648,7 +648,8 @@
         3，约束红节点不能相邻放置;
         4，约束根->叶子路径中黑节点个数相等
         ```
-        ![红黑树sample-w150](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png)
+        <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black_tree_example.png" width="350px">   
+
         - [x] 实际中，**红黑树的高度不会超过 2*log2n；这保证了最坏情况下插入、删除和查找操作的时间复杂度**。
         - [x] 适用场景：用到动态插入，删除，查找数据的场景都可以 —— 例如，目前 Linux 内核所采用的完全公平调度器（the Completely Fair Scheduler）也使用到了红黑树树。在 Java 8中，Collection HashMap也从原本用Linked List实现，储存特定元素的哈希码，改为用红黑树实现。
         - [Aduni —— 算法 —— 课程4（该链接直接跳到开始部分）（视频）](https://youtu.be/1W3x0f_RmUo?list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&t=3871)
@@ -677,7 +678,21 @@
                 - 2，删除叶子节点
                 ![删除叶子节点](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-tree-pic.png)
                 - 2.1 下图展示了删除叶子节点的几种情况(待删除节点是父节点右子节点时)
-                ![示例](https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png)
+                    - case1, P的兄弟节点B为红色
+                    - case2, B为黑色，且B无子节点 <需要re-balance>
+                    - case3, B为黑色，B只有左子节点BL
+                    - case4, B为黑色，B只有右子节点BR
+                    - case5, B为黑色，且有2个子节点
+                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png" width="200px">
+                - 3，重新平衡
+                   - 仅当删除叶子节点的case2时才会破坏平衡，以case2中的父节点B为关注节点开始逐步向上re-balance
+                   - case1, 关注节点P的兄弟节点B为红
+                   - case2, 兄弟节点B为黑色，且其左右子节点均为黑
+                   - case3, B为黑色，且其左子节点BL为红，右子节点BR为黑
+                   - case4, B为黑色，BR为红色，BL任意
+                   <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-re-balance-pic.jpg" width="400px">
+
+
                 
                 
     - [ ] **2-3查找树**
@@ -1268,8 +1283,6 @@
 这里有个很棒的入门教学，内容是如何在面试中有条不紊，并且有互动沟通地解决问题。这种能力可以从面试书籍中获得，但我觉得这个也很棒：[算法设计画布](http://www.hiredintech.com/algorithm-design/)。
 
 家里没有白板？那讲得通。我是一个怪人，有一个很大的白板。从白板商店买了一个大的绘图板，而不是白板。你可以坐在沙发上练习。这是我的“沙发白板”。我在照片中添加了笔以便进行缩放。如果你使用笔，则希望可以擦除。快速变得凌乱。我用铅笔和橡皮擦。
-
-![我的沙发白板](https://d3j2pkmjtin6ou.cloudfront.net/art_board_sm_2.jpg)
 
 补充：
 
