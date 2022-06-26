@@ -1,0 +1,126 @@
+## 系统设计、可伸缩性、数据处理
+
+**如果你已经拥有了4年以上的编程经验，那你可以来看看有关系统设计的问题**
+- [系统设计、可伸缩性、数据处理](#系统设计可伸缩性数据处理)（如果你有4+年经验）
+
+- 系统设计以及可伸缩性，要把软硬件的伸缩性设计的足够好有很多的东西要考虑，所以这是个包含非常多内容和资源的大主题。要花费相当多的时间在这个主题上。
+- 考量：
+    - 伸缩性
+        - 把大数据集提取为单一值
+        - 大数据集转换
+        - 处理大量的数据集
+    - 系统
+        - 功能集
+        - 接口
+        - 类层次结构
+        - 在特定的约束下设计系统
+        - 轻量和健壮性
+        - 权衡和折衷
+        - 性能分析和优化
+- [ ] **从这里开始**：[系统设计入门](https://github.com/donnemartin/system-design-primer)
+- [ ] [HiredInTech：系统设计](http://www.hiredintech.com/system-design/)
+- [ ] [该如何为技术面试里设计方面的问题做准备?](https://www.quora.comHow-do-I-prepare-to-answer-design-questions-in-a-technical-interview?redirected_qid=1500023)
+- [ ] [在系统设计面试前必须知道的 8 件事](http://blog.gainlo.co/index.php/2015/10/228-things-you-need-to-know-before-system-design-interviews/)
+- [ ] [算法设计](http://www.hiredintech.com/algorithm-design/)
+- [ ] [数据库范式 - 1NF, 2NF, 3NF and 4NF（视频）](https://www.youtube.com/watch?v=UrYLYV7WSHM)
+- [ ] [系统设计面试](https://github.com/checkcheckzz/system-design-interview) - 这一部分有很多的资源浏览一下我放在下面的文章和例子。
+- [ ] [如何在系统设计面试中脱颖而出](http://www.palantir.com/2011/10how-to-rock-a-systems-design-interview/)
+- [ ] [每个人都该知道的一些数字](http://everythingisdata.wordpress.com/2009/10/17numbers-everyone-should-know/)
+- [ ] [上下文切换操作会耗费多少时间?](http://blog.tsunanet.net/2010/11how-long-does-it-take-to-make-context.html)
+- [ ] [跨数据中心的事务（视频）](https://www.youtube.com/watch?v=srOgpXECblk)
+- [ ] [简明 CAP 理论介绍](http://ksat.me/a-plain-english-introduction-to-cap-theorem/)
+- [ ] 共识算法：
+    - [ ] Paxos：[Paxos协议──Computerphile（视频）](https://www.youtube.com/watch?v=s8JqcZtvnsM)
+    - [ ] Raft: [Raft 分布式共识算法简介（视频）](https://www.youtube.com/watch?v=P9Ydif5_qvE)
+        - [ ] [易于阅读的论文](https://raft.github.io/)
+        - [ ] [信息图]
+- [ ] [一致性哈希](http://www.tom-e-white.com/2007/11/consistent-hashing.html)
+- [ ] [NoSQL 模式](http://horicky.blogspot.com/2009/11/nosql-patterns.html)
+- [ ] 可伸缩性:
+    - 你不需要知道所有这些。只需挑选一些你感兴趣的东西即可。
+    - [ ] [很棒的概述（视频）](https://www.youtube.com/watch?v=-W9F__D3oY4)
+    - [ ] 简短系列:
+        - [克隆](http://www.lecloud.net/post/7295452622/scalability-for-dummies-part-1-clones)
+        - [数据库](http://www.lecloud.net/post/7994751381/scalability-for-dummies-part-2-database)
+        - [缓存](http://www.lecloud.net/post/9246290032/scalability-for-dummies-part-3-cache)
+        - [异步](http://www.lecloud.net/post/9699762917/scalability-for-dummies-part-4-asynchronism)
+    - [ ] [可伸缩的 Web 架构和分布式系统](http://www.aosabook.org/en/distsys.html)
+    - [ ] [错误的分布式系统解释](https://pages.cs.wisc.edu/~zuyu/files/fallacies.pdf)
+    - [ ] [实用编程技术](http://horicky.blogspot.com/2010/10/scalable-system-design-patterns.html)
+        - [extra: Google Pregel 图形处理](http://horicky.blogspot.com/2010/07/google-pregel-graph-processing.html)
+    - [ ] [Jeff Dean - 在 Goolge 构建软件系统（视频）](https://www.youtube.com/watch?v=modXC5IWTJI)
+    - [ ] [可伸缩系统架构设计介绍](http://lethain.com/introduction-to-architecting-systems-for-scale/)
+    - [ ] [使用 App Engine 和云存储扩展面向全球用户的手机游戏架构实践（视频）](https://www.youtube.com/watch?v=9nWyWwY2Onc)
+    - [ ] [How Google Does Planet-Scale Engineering for Planet-Scale Infra（视频）](https://www.youtube.com/watch?v=H4vMcD7zKM0)
+    - [ ] [算法的重要性](https://www.topcoder.com/community/data-science/data-science-tutorials/the-importance-of-algorithms/)
+    - [ ] [分片（Sharding）](http://highscalability.com/blog/2009/8/6/an-unorthodox-approach-to-database-design-the-coming-of-the.html)
+    - [ ] [Facebook 系统规模扩展实践 (2012), "为 10 亿用户构建"（视频）](https://www.youtube.com/watch?v=oodS71YtkGU)
+    - [ ] [Long Game 工程实践 - Astrid Atkinson Keynote（视频）](https://www.youtube.com/watch?v=p0jGmgIrf_M&list=PLRXxvay_m8gqVlExPC5DG3TGWJTaBgqSA&index=4)
+    - [ ] [30 分钟看完 YouTuBe 7 年系统扩展经验](http://highscalability.com/blog/2012/3/26/7-years-of-youtube-scalability-lessons-in-30-minutes.html)
+        - [视频](https://www.youtube.com/watch?v=G-lGCC4KKok)
+    - [ ] [PayPal 如何用 8 台虚拟机扛住 10 亿日交易量系统](http://highscalability.com/blog/2016/8/15/how-paypal-scaled-to-billions-of-transactions-daily-using-ju.html)
+    - [ ] [如何对大数据集去重](https://blog.clevertap.com/how-to-remove-duplicates-in-large-datasets/)
+    - [ ] [Etsy 的扩展和工程文化探究 Jon Cowie（视频）](https://www.youtube.com/watch?v=3vV4YiqKm1o)
+    - [ ] [是什么造就了 Amazon 自己的微服务架构](http://thenewstack.io/led-amazon-microservices-architecture/)
+    - [ ] [压缩还是不压缩，是 Uber 面临的问题](https://eng.uber.com/trip-data-squeeze/)
+    - [ ] [异步 I/O Tarantool 队列](http://highscalability.com/blog/2016/3/3/asyncio-tarantool-queue-get-in-the-queue.html)
+    - [ ] [什么时候应该用近似查询处理?](http://highscalability.com/blog/2016/2/25/when-should-approximate-query-processing-be-used.html)
+    - [ ] [Google 从单数据中心到故障转移, 到本地多宿主架构的演变](http://highscalability.com/blog/2016/2/23/googles-transition-from-single-datacenter-to-failover-to-a-n.html)
+    - [ ] [Spanner](http://highscalability.com/blog/2012/9/24/google-spanners-most-surprising-revelation-nosql-is-out-and.html)
+    - [ ] [Egnyte: 构建和扩展 PB 级分布式系统架构的经验教训](http://highscalability.com/blog/2016/2/15/egnyte-architecture-lessons-learned-in-building-and-scaling.html)
+    - [ ] [机器学习驱动的编程: 新世界的新编程方式](http://highscalability.com/blog/2016/7/6/machine-learning-driven-programming-a-new-programming-for-a.html)
+    - [ ] [日服务数百万请求的图像优化技术](http://highscalability.com/blog/2016/6/15/the-image-optimization-technology-that-serves-millions-of-re.html)
+    - [ ] [Patreon 架构](http://highscalability.com/blog/2016/2/1/a-patreon-architecture-short.html)
+    - [ ] [Tinder: 推荐引擎是如何决定下一个你将会看到谁的?](http://highscalability.com/blog/2016/1/27/tinder-how-does-one-of-the-largest-recommendation-engines-de.html)
+    - [ ] [现代缓存设计](http://highscalability.com/blog/2016/1/25/design-of-a-modern-cache.html)
+    - [ ] [Facebook 实时视频流扩展](http://highscalability.com/blog/2016/1/13/live-video-streaming-at-facebook-scale.html)
+    - [ ] [在 Amazon AWS 上把服务扩展到 1100 万量级的新手教程](http://highscalability.com/blog/2016/1/11/a-beginners-guide-to-scaling-to-11-million-users-on-amazons.html)
+    - [ ] [对延时敏感的应用是否应该使用 Docker?](http://highscalability.com/blog/2015/12/16/how-does-the-use-of-docker-effect-latency.html)
+    - [ ] [360 度解读 Netflix 技术栈](http://highscalability.com/blog/2015/11/9/a-360-degree-view-of-the-entire-netflix-stack.html)
+    - [ ] [延迟无处不在 - 如何搞定它？](http://highscalability.com/latency-everywhere-and-it-costs-you-sales-how-crush-it)
+    - [ ] [无服务器架构](http://martinfowler.com/articles/serverless.html)
+    - [ ] [是什么驱动着 Instagram: 上百个实例、几十种技术](http://instagram-engineering.tumblr.com/post/13649370142/what-powers-instagram-hundreds-of-instances)
+    - [ ] [Cinchcast 架构 - 每天处理 1500 小时的音频](http://highscalability.com/blog/2012/7/16/cinchcast-architecture-producing-1500-hours-of-audio-every-d.html)
+    - [ ] [Justin.Tv 实时视频播放架构](http://highscalability.com/blog/2010/3/16/justintvs-live-video-broadcasting-architecture.html)
+    - [ ] [Playfish's 社交游戏架构 - 每月五千万用户增长](http://highscalability.com/blog/2010/9/21/playfishs-social-gaming-architecture-50-million-monthly-user.html)
+    - [ ] [猫途鹰架构 - 40 万访客, 200 万动态页面访问, 30TB 数据](http://highscalability.com/blog/2011/6/27/tripadvisor-architecture-40m-visitors-200m-dynamic-page-view.html)
+    - [ ] [PlentyOfFish 架构](http://highscalability.com/plentyoffish-architecture)
+    - [ ] [Salesforce 架构 - 如何扛住 13 亿日交易量](http://highscalability.com/blog/2013/9/23/salesforce-architecture-how-they-handle-13-billion-transacti.html)
+    - [ ] [ESPN's 架构扩展](http://highscalability.com/blog/2013/11/4/espns-architecture-at-scale-operating-at-100000-duh-nuh-nuhs.html)
+    - [ ] 下面“消息传递，序列化和队列系统”部分的内容会提到什么样的技术能把各种服务整合到一起
+    - [ ] Twitter:
+        - [O'Reilly MySQL CE 2011: Jeremy Cole, "Big and Small Data at @Twitter"（视频）](https://www.youtube.com/watch?v=5cKTP36HVgI)
+        - [时间线的扩展](https://www.infoq.com/presentations/Twitter-Timeline-Scalability)
+    - 更多内容可以查看[视频系列部分](#视频系列)的“大规模数据挖掘”视频系列。
+- [ ] 系统设计问题练习：下面有一些指导原则，每一个都有相关文档以及在现实中该如何处理。
+    - 复习: [系统设计入门](https://github.com/donnemartin/system-design-primer)
+    - [HiredInTech 的系统设计](http://www.hiredintech.com/system-design/)
+    - [备忘单](https://github.com/jwasham/coding-interview-university/blob/main/extras/cheat%20sheets/system-design.pdf)
+    - 流程:
+        1. 理解问题和范围:
+            - 在面试官的帮助下定义用例
+            - 提出附加功能的建议
+            - 去掉面试官认定范围以外的内容
+            - 假定高可用是必须的，而且要作为一个用例
+        2. 考虑约束:
+            - 问一下每月请求量
+            - 问一下每秒请求量 (他们可能会主动提到或者让你算一下)
+            - 评估读写所占的百分比
+            - 评估的时候牢记 2/8 原则
+            - 每秒写多少数据
+            - 总的数据存储量要考虑超过 5 年的情况
+            - 每秒读多少数据
+        3. 抽象设计:
+            - 分层 (服务, 数据, 缓存)
+            - 基础设施: 负载均衡, 消息
+            - 粗略的概括任何驱动整个服务的关键算法
+            - 考虑瓶颈并指出解决方案
+    - 练习:
+        - [设计一个 CDN 网络](http://repository.cmu.edu/cgi/viewcontent.cgi?article=2112&context=compsci)
+        - [设计一个随机唯一 ID 生成系统](https://blog.twitter.com/2010/announcing-snowflake)
+        - [设计一个在线多人卡牌游戏](http://www.indieflashblog.com/how-to-create-an-asynchronous-multiplayer-game.html)
+        - [设计一个键值数据库](http://www.slideshare.net/dvirsky/introduction-to-redis)
+        - [设计一个图片分享系统](http://highscalability.com/blog/2011/12/6/instagram-architecture-14-million-users-terabytes-of-photos.html)
+        - [设计一个推荐系统](http://ijcai13.org/files/tutorial_slides/td3.pdf)
+        - [设计一个短域名生成系统](http://www.hiredintech.com/system-design/the-system-design-process/)
+        - [设计一个缓存系统](https://www.adayinthelifeof.nl/2011/02/06/memcache-internals/)
