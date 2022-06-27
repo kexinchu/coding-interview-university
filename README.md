@@ -630,20 +630,25 @@
         - [Aduni —— 算法 —— 课程5（视频）](https://www.youtube.com/watch?v=hm2GHwyKF1o&list=PLFDnELG9dpVxQCxuD-9BSy2E7BWY3t5Sm&index=5)
         - [二分查找及红黑树的介绍](https://www.topcoder.com/community/data-science/data-science-tutorials/an-introduction-to-binary-search-and-red-black-trees/)  
         - [x] **[代码实现](https://github.com/kexinchu/algo/tree/master/C-Cplusplus/binary_search_tree)**
-            - 插入操作 - 插入节点设为红色 & 新插入的节点都放在叶子节点上
-                - 1，插入节点为根节点，直接变颜色为黑
-                - 2，插入节点父节点颜色为黑色，什么都不用做
-                - 3，关注节点a，父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设置祖父为新的关注节点    
+            - 插入操作 - 插入节点设为红色 & 新插入的节点都放在叶子节点上 & 设a为关注节点  <平衡红色节点不相邻>
+                - case1，a为根节点，直接变颜色为黑
+                - case2，a的父节点颜色为黑色，什么都不用做
+                - case3，a的父节点为红色，叔节点也为红色   =>  父/叔变黑，祖父变红，设祖父节点为新的关注节点    
 
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case3.png" width="200px">     
 
-                - 4，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的右子节点  =>  围绕父节点左旋，设置父节点为关注节点<行成case5>     
+                - 下面父节点为红，叔节点为黑，需要根据 祖父->父节点->a 的关系来判断
+                    - case4，父节点是祖父节点的左子节点，且a为父节点的右子节点 (LR结构) =>  围绕父节点左旋，设置父节点为关注节点<形成LL结构>     
 
-                <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png" width="200px">    
+                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case4.png" width="200px">    
 
-                - 5，关注节点a,父节点为红色，叔节点也为黑色，且a为父节点的左子节点  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色     
+                    - case5，父节点是祖父节点的左子节点，且a为父节点的左子节点 (LL结构)  =>  围绕祖父节点右旋，交换父节点与祖父节点的颜色；结束     
 
-                <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case5.png" width="200px">    
+                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-insert-case5.png" width="200px">    
+
+                    - case6，父节点是祖父节点的右子节点，且a为父节点的左子节点 (RL结构) =>  围绕父节点右旋，设置父节点为关注节点<形成RR结构>     
+
+                    - case7，父节点是祖父节点的右子节点，且a为父节点的右子节点 (RR结构)  =>  围绕祖父节点左旋，交换父节点与祖父节点的颜色；结束     
 
             - 删除操作
                 - 1，待删除节点的三种情况分类
@@ -658,21 +663,32 @@
                 - 2，删除叶子节点   
                 <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-tree-pic.png" width="500px">   
 
-                - 2.1 下图展示了删除叶子节点的几种情况(待删除节点是父节点右子节点时)
-                    - case1, P的兄弟节点B为红色
-                    - case2, B为黑色，且B无子节点 <需要re-balance>
-                    - case3, B为黑色，B只有左子节点BL
-                    - case4, B为黑色，B只有右子节点BR
-                    - case5, B为黑色，且有2个子节点   
+                ```
+                1、P为红色, 令P为黑色，继续
+                2、P为黑色
+                   2.1、if 目标节点P 是 父节点F 的左孩子
+                      case1, P的兄弟节点B为红色 => 交换父节点F 和 B的颜色, 并围绕F左旋
+                      case2, B为黑色，且B无子节点 => 使F为红色，并围绕F左旋 <if F本来就是红色，结束，else 黑色深度-1 需要re-balance>
+                      case3, B为黑色，B只有左子节点BL => 令BL颜色=F; P为红色，F为黑色， 删除节点P & 围绕B右旋得到RR & 围绕F左旋
+                      case4, B为黑色，B只有右子节点BR => 交换F和B的颜色; P为红色，BR为黑色(RR) & 围绕P左旋
+                      case5, B为黑色，且有2个子节点 => 交换B和F, 令BR为黑色， 删除P，围绕F左旋(操作与case4一致)
+                   2.2、else P 是 父节点F 的右孩子
+                      情况同上，旋转方向相反即可
+                ```
 
-                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png" width="200px">   
+                - 当P为F左子节点是，case1到case5 示例图：       
 
-                - 3，重新平衡
+                <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree_delete-left.png" width="200px">   
+
+                - 3，重新平衡 <平衡 左右子树黑色高度一致>
                    - 仅当删除叶子节点的case2时才会破坏平衡，以case2中的父节点B为关注节点开始逐步向上re-balance
-                   - case1, 关注节点P的兄弟节点B为红
-                   - case2, 兄弟节点B为黑色，且其左右子节点均为黑
-                   - case3, B为黑色，且其左子节点BL为红，右子节点BR为黑
-                   - case4, B为黑色，BR为红色，BL任意   
+                   - if P 是 父节点F 的左子节点
+                        - case1, 关注节点P的兄弟节点B为红 => 交换B F颜色，绕F左旋
+                        - case2, 兄弟节点B为黑色，且其左右子节点均为黑 => 令B为红，F为黑，若F原本就是黑色，则以F为目标节点继续
+                        - case3, B为黑色，且其左子节点BL为红，右子节点BR为黑  => (BL)交换BL 和 B的颜色，绕B右旋，得到(RR)case4
+                        - case4, B为黑色，BR为红色，BL任意 => (RR)交换B和F的颜色，令BR为黑，绕F左旋,结束
+                   - else (P是F的右节点)
+                        - case1 ~ 4, 旋转方向相反
 
                    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/red-black-tree-re-balance-pic.jpg" width="350px">   
 
