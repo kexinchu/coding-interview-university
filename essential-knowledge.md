@@ -123,22 +123,28 @@
         - 定义
             - 哈希函数: 计算key得到唯一的非负整数；when key1 = key2，那hash(key1) = hash(key2); when key1 != key2，那hash(key1) != hash(key2);
             - 散列冲突: 因为现实中存储数据的空间有限 => 散列冲突无法避免
-                - 开放寻址法(open address): 从当前位置开始，依次向后查找，看是否有空闲位置，直到找到为止; 
+                - 开放寻址法(open address): 
+                    - 线性探测法：从当前位置开始，依次向后查找，看是否有空闲位置，直到找到为止;
+                    - 二次探测法：将线性探测的步长变为原来的二次方：hash(key)+0 ... hash(key)+1^i 或 hash(key)-1^i
+                    - 双重散列法：double hash： h_{i}(key) = (h1(key)+i*h2(key))%m ; 0≤i≤m-1 
+                    即探查序列为：d=h1(key)，(d+h2(key))%m，(d+2h2(key))%m，…，等。
                     - 缺点明显: 随着插入的数据越多，散列冲突的概率越大
                 - 链表法(chaining):     
-                <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/hash-map-chaining-sample.jpg" width="200px">       
+                <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/hash-map-chaining-sample.jpg" width="400px">       
 
     - [ ] 视频：
         - [x] [链式哈希表（视频）](https://www.youtube.com/watch?v=0M_kIqhwbFo&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb&index=8)
-        - [ ] [Table Doubling 和 Karp-Rabin（视频）](https://www.youtube.com/watch?v=BRO7mVIFt08&index=9&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb)
-        - [ ] [Open Addressing 和密码型哈希（Cryptographic Hashing）（视频）](https://www.youtube.com/watch?v=rvdJDijO2Ro&index=10&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb)
+        - [x] [Table Doubling 和 Karp-Rabin（视频）](https://www.youtube.com/watch?v=BRO7mVIFt08&index=9&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb)
+            - Karp-Rabin算法 - 字符串匹配算法 (给定字符串text和模式串pat，输出text中所有与pat相等的子串)
+            - 算法思路：滚动计算子串的hash，再通过与pat的hash只进行比较来得到 O(n)
+            <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/rabin-karp.png" width="400px">     
+        - [x] [Open Addressing 和密码型哈希（Cryptographic Hashing）（视频）](https://www.youtube.com/watch?v=rvdJDijO2Ro&index=10&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb)
+            - 注意删除操作：删除造成的空格，可能会影响 开放寻址的 Search操作<一次查找到第一个空格为止>
+            - 用一个标记delete的标记标记这个空格
+            - open addressing 需要保持装载因子保持在0.5左右<不超过0.5>
         - [ ] [PyCon 2010：The Mighty Dictionary（视频）](https://www.youtube.com/watch?v=C4Kc8xzcA68)
         - [ ] [（进阶）随机取样（Randomization）：全域哈希（Universal Hashing）& 完美哈希（Perfect Hashing）（视频）](https://www.youtube.com/watch?v=z0lJ2k0sl1g&list=PLUl4u3cNGP6317WaSNfmCvGym2ucw3oGp&index=11)
         - [ ] [（进阶）完美哈希（Perfect hashing）（视频）](https://www.youtube.com/watch?v=N0COwN14gt0&list=PL2B4EEwhKD-NbwZ4ezj7gyc_3yNrojKM9&index=4)
-
-    - [ ] 在线课程：
-        - [ ] [基本哈希表（视频）](https://www.coursera.org/learn/data-structures-optimizing-performance/lecture/m7UuP/core-hash-tables)
-        - [ ] [数据结构（视频）](https://www.coursera.org/learn/data-structures/home/week/3)
         - [ ] [电话薄问题（Phone Book Problem）（视频）](https://www.coursera.org/learn/data-structures/lecture/NYZZP/phone-book-problem)
         - [ ] 分布式哈希表：
             - [Dropbox 中的瞬时上传及存储优化（视频）](https://www.coursera.org/learn/data-structures/lecture/DvaIb/instant-uploads-and-storage-optimization-in-dropbox)
@@ -274,14 +280,13 @@
     - C/C++:
         - [x] [二叉查找树 —— 在 C/C++ 中实现（视频）](https://www.youtube.com/watch?v=COZK7NATh4k&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=28)
         - [ ] [BST 的实现 —— 在堆栈和堆中的内存分配（视频）](https://www.youtube.com/watch?v=hWokyBoo0aI&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=29)
-        - [ ] [在二叉查找树中找到最小和最大的元素（视频）](https://www.youtube.com/watch?v=Ut90klNN264&index=30&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
-        - [ ] [寻找二叉树的高度（视频）](https://www.youtube.com/watch?v=_pnqMz5nrRs&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=31)
-        - [ ] [二叉树的遍历 —— 广度优先和深度优先策略（视频）](https://www.youtube.com/watch?v=9RHO6jU--GU&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=32)
-        - [ ] [二叉树：层序遍历（视频）](https://www.youtube.com/watch?v=86g8jAQug04&index=33&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
-        - [ ] [二叉树的遍历：先序、中序、后序（视频）](https://www.youtube.com/watch?v=gm8DUJJhmY4&index=34&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
-        - [ ] [判断一棵二叉树是否为二叉查找树（视频）](https://www.youtube.com/watch?v=yEwSGhSsT0U&index=35&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
-        - [ ] [从二叉查找树中删除一个节点（视频）](https://www.youtube.com/watch?v=gcULXE7ViZw&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=36)
-        - [ ] [二叉查找树中序遍历的后继者（视频）](https://www.youtube.com/watch?v=5cPbNCrdotA&index=37&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
+        - [x] [在二叉查找树中找到最小和最大的元素（视频）](https://www.youtube.com/watch?v=Ut90klNN264&index=30&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
+            - min: 持续寻找左子节点: 左子节点 < 根节点 < 右子节点
+            - max: 持续寻找右子节点
+        - [x] [寻找二叉树的高度（视频）](https://www.youtube.com/watch?v=_pnqMz5nrRs&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P&index=31)
+            - height(root) = max(height(root->left), height(root->right)) + 1
+        - [x] [判断一棵二叉树是否为二叉查找树（视频）](https://www.youtube.com/watch?v=yEwSGhSsT0U&index=35&list=PL2_aWCzGMAwI3W_JlcBbtYTwiQSsOTa6P)
+            - 判断是否 左子树 < 根节点 < 右子树  for the hole tree and all sub-tree
     - [x] **[代码实现](https://github.com/kexinchu/algo/tree/master/C-Cplusplus/binary_search_tree)**：
         - [x] insert         // 往树上插值
         - [x] get_node_count // 查找树上的节点数
