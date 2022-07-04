@@ -710,7 +710,7 @@
             - [ ] [概率解释（视频）](https://www.youtube.com/watch?v=uzkc-qNVoOk&list=PLC58778F28211FA19)
 
 - ### NP, NP-完全和近似算法
-    - 知道最经典的一些 NP 完全问题，比如旅行商问题和背包问题，而且能在面试官试图忽悠你的时候识别出他们。
+    - 知道最经典的一些 NP 完全问题，比如**旅行商问题**和**背包问题**，而且能在面试官试图忽悠你的时候识别出他们。
     - 知道 NP 完全是什么意思.
     - [ ] [计算复杂度（视频）](https://www.youtube.com/watch?v=moPtwq_cVH8&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb&index=23)
     - [ ] Simonson:
@@ -728,6 +728,16 @@
     - Peter Norvik 讨论旅行商问题的近似最优解:
         - [Jupyter 笔记本](http://nbviewer.jupyter.org/url/norvig.com/ipython/TSP.ipynb)
     - 《算法导论》（CLRS）的第 1048 - 1140 页。
+    - [ ] 背包问题(动态规划)
+        - [x] 背包问题分类
+        <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/knapsack-problem.png" width="300px">    
+        - [ ] 0/1背包
+            - eg: 有n件物品和一个最多能背重量为w 的背包。第i件物品的重量是weight[i]，得到的价值是value[i] 。每件物品只能用一次，求解将哪些物品装入背包里物品价值总和最大。
+            - 方法：二维dp数组:  递归 dp[i][j] = max(dp[i-1][j], dp[i-1][j-weight[i]] + value[i]);
+            - 
+        - [ ] 完全背包
+        - [ ] 多重背包
+
 
 - ### 缓存（Cache）
     - [ ] LRU 缓存:
@@ -807,7 +817,6 @@
 如果你需要有关此主题的更多详细信息，请参阅“[一些主题的额外内容](#一些主题的额外内容)”中的“字符串匹配”部分。
 
 - ### 字典树（Tries）
-
     - 需要注意的是，字典树各式各样。有些有前缀，而有些则没有。有些使用字符串而不使用比特位来追踪路径。
     - 阅读代码，但不实现。
     - [Sedgewick──字典树（3个视频）](https://www.coursera.org/learn/algorithms-part2/home/week/4)
@@ -858,6 +867,10 @@
             - 头37分钟讲述的很专业，或许可以跳过（B 指块的大小、即缓存行的大小）
 
 - ### 浮点数
+    - 双精度浮点数 & 单精度浮点数
+    - 二进制表示 => 0.1这种的小数是近似存储的
+    - [x] Express计数方法：
+    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/float-express.png" width="300px">
 
     - [ ] 简单8位：[浮点数的表示形式-1（视频──计算中存在错误，请参见视频说明）](https://www.youtube.com/watch?v=ji3SfClm8TU)
     - [ ] 32位：[IEEE754 32位浮点二进制（视频）](https://www.youtube.com/watch?v=50ZYcZebIec)
