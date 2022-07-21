@@ -907,3 +907,15 @@
     - [ ] 套接字（Sockets）：
         - [Java──套接字──介绍（视频）](https://www.youtube.com/watch?v=6G_W54zuadg&t=6s)
         - [套接字编程（视频）](https://www.youtube.com/watch?v=G75vN2mnJeQ)
+    - TCP/IP; HTTP; Socket的区别
+        - IP是网络层协议；TCP是传输层协议; => 使两个端可以通信(发送和接收字节流)
+        - HTTP是应用层协议 => 规定通信内容的格式，方便通信双方理解内容
+            - http连接 = 以http协议为通信协议的tcp连接。
+            - http短连接 = 以http协议为通信协议的，请求一次就断开的tcp连接
+            - http长连接 = 以http协议为通信协议的，请求多次才断开的tcp连接（这个是为了通过减少建立tcp连接的次数达到节省两端资源的目的）
+            - tcp连接是不分长连接和短连接的，
+        - Socket是套接字，是操作系统实现的TCP/IP网络的接口API；方便用户建立和使用网络通信服务
+            - 服务器端先初始化socket，然后与端口绑定，对端口进行监听，调用accept接收客户端链接，recv()/send()接收和发送数据，最后close()关闭socket连接，释放资源;
+                - socket() -> bind() -> listen() -> accept() -> recv()/send() -> close()
+            - 客户端先初始化socket，然后与服务端连接，服务端监听成功则连接建立完成
+                - socket() -> connect() -> send()/recv() -> close()
