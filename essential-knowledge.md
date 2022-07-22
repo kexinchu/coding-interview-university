@@ -905,7 +905,13 @@
     - [ ] [视频系列（21个视频）](https://www.youtube.com/playlist?list=PLEbnTDJUr_IegfoqO4iPnPYQui46QqT0j)
     - [ ] [子网络解密 - 第五部分 经典内部域名指向 CIDR 标记（视频）](https://www.youtube.com/watch?v=t5xYI0jzOf4)
     - [ ] 套接字（Sockets）：
-        - [Java──套接字──介绍（视频）](https://www.youtube.com/watch?v=6G_W54zuadg&t=6s)
+        - [C++_套接字_学习](https://freecplus.net/0047ac4059b14d52bcc1d4df6ae8bb83.html)
+            - [代码](https://github.com/kexinchu/coding-interview-university/tree/master/code/network-program/base-socket)
+            - Socket套接字，是操作系统实现的TCP/IP网络的接口API；方便用户建立和使用网络通信服务
+            - 服务端：
+                初始化socket() -> bind()绑定IP+Port -> listen()监听端口 -> accept()接受用户端连接 -> recv()/send()完成通信 -> close()关闭socket释放资源
+            - 客户端：
+                - 初始化socket() -> connect()链接服务端 -> send()/recv()完成通信 -> close()关闭socket释放资源
         - [套接字编程（视频）](https://www.youtube.com/watch?v=G75vN2mnJeQ)
     - TCP/IP; HTTP; Socket的区别
         - IP是网络层协议；TCP是传输层协议; => 使两个端可以通信(发送和接收字节流)
@@ -915,7 +921,4 @@
             - http长连接 = 以http协议为通信协议的，请求多次才断开的tcp连接（这个是为了通过减少建立tcp连接的次数达到节省两端资源的目的）
             - tcp连接是不分长连接和短连接的，
         - Socket是套接字，是操作系统实现的TCP/IP网络的接口API；方便用户建立和使用网络通信服务
-            - 服务器端先初始化socket，然后与端口绑定，对端口进行监听，调用accept接收客户端链接，recv()/send()接收和发送数据，最后close()关闭socket连接，释放资源;
-                - socket() -> bind() -> listen() -> accept() -> recv()/send() -> close()
-            - 客户端先初始化socket，然后与服务端连接，服务端监听成功则连接建立完成
-                - socket() -> connect() -> send()/recv() -> close()
+            

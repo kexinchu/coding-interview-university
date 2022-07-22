@@ -33,20 +33,14 @@ int main(int argc, char *argv[])
     }
 
     // 第2步：把服务端用于通信的地址和端口绑定到socket上。
-    /***
-    struct sockaddr和struct sockaddr_in这两个结构体用来处理网络通信的地址。
-      - 二者长度一样，都是16个字节，即占用的内存大小是一致的，因此可以互相转化。二者是并列结构，指向sockaddr_in结构的指针也可以指向sockaddr。
-      - sockaddr常用于bind、connect、recvfrom、sendto等函数的参数，指明地址信息，是一种通用的套接字地址。
-      - sockaddr_in 是internet环境下套接字的地址形式。
-          所以在网络编程中我们会对sockaddr_in结构体进行操作，使用sockaddr_in来建立所需的信息，最后使用类型转化就可以了。
-          一般先把sockaddr_in变量赋值后，强制类型转换后传入用sockaddr做参数的函数：sockaddr_in用于socket定义和赋值；sockaddr用于函数参数。
-    ***/
     struct sockaddr_in servaddr;                  // 声明存放服务端地址信息的数据结构。
     memset(&servaddr, 0, sizeof(servaddr));       // memset 使用0来对&servaddr进行初始化
     servaddr.sin_family = AF_INET;                // 协议族，在socket编程中只能是AF_INET。
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY); // 任意ip地址。
-    //servaddr.sin_addr.s_addr = inet_addr("192.168.190.134"); // 指定ip地址。
-    servaddr.sin_port = htons(atoi(argv[1])); // 指定通信端口。
+    //servaddr.sin_addr.s_addr = inet_addr("192.168.190.134"); // 指定ip地址
+    servaddr.sin_port = htons(atoi(argv[1])); // 指定通信端口, 使用网络字节顺序
+
+    // int band(int, const sockaddr, socklen_t) 规定的入参格式，需要将servaddr转换成sockaddr* 再传入
     if (bind(listenfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0)
     {
         perror("bind");
@@ -55,6 +49,7 @@ int main(int argc, char *argv[])
     }
 
     // 第3步：把socket设置为监听模式。
+    // listen函数把主动连接socket变为被动连接的socket，使得这个socket可以接受其它socket的连接请求，从而成为一个服务端的socket。
     if (listen(listenfd, 5) != 0)
     {
         perror("listen");

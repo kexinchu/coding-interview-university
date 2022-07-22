@@ -5,6 +5,3 @@ client:client.cpp
 
 server:server.cpp
 	g++ -g -o server server.cpp
-
-# ./server 5005
-# ./client ${ip} 5005
