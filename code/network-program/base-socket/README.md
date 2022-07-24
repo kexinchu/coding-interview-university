@@ -226,3 +226,28 @@ make
         ```
         servaddr.sin_port = htons(atoi(argv[1]));    // 指定通信端口, 使用网络字节顺序
         ```
+    
+    - 分包和粘包
+        - TCP协议是基于字节流并且无边界的传输协议, 因此很有可能产生分包和粘包问题；
+        - 发送方引起的粘包是由TCP协议本身造成的，TCP为提高传输效率，发送方往往要收集到足够多的数据后才发送一个TCP段。若连续几次需要send的数据都很少，通常TCP会根据优化算法把这些数据合成一个TCP段后一次发送出去，但是接收方并不知道要一次接收多少字节的数据，这样接收方就收到了粘包数据。
+        ```
+        // 模拟可以通过指定不同的发送和接收字节长度时，来模拟
+        // send() - 每次发送44个字节的内容
+        sprintf(buffer, "这是第%d个报文，编号%03d。", ii + 1, ii + 1);
+        if ((iret = send(sockfd, buffer, strlen(buffer), 0)) <= 0)
+        { // 向服务端发送请求报文。
+            perror("send");
+            break;
+        }
+
+        // recv() - 当选择接收1024个字节的内容时; 就会在服务端看到客户端发送的包被切割和
+        int iret;
+        memset(buffer, 0, sizeof(buffer)); // 初始化为0
+        if ((iret = recv(clientfd, buffer, 1024, 0)) <= 0)
+        { // 接收客户端的请求报文。
+            printf("iret=%d\n", iret);
+            break;
+        }
+        ```
+        - 如何解决分包和粘包问题: 需要自定义一份协议
+            - 常用方法：报文长度+报文内容   0010helloworld
