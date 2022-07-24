@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    // 第4步：接受客户端的连接。
+    // 第4步：接受客户端的连接: accpet从listen队列中获取一个链接请求，如果队列为空，accpet函数将阻塞等待
     int clientfd;                             // 客户端的socket。
     int socklen = sizeof(struct sockaddr_in); // struct sockaddr_in的大小
     struct sockaddr_in clientaddr;            // 客户端的地址信息。

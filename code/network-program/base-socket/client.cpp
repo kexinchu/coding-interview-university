@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     struct hostent *h;
     // struct hostent *gethostbyname(const char *name)  // 可以解析域名主机名，功能比inet_addr更强大(只支持ip地址)
     if ((h = gethostbyname(argv[1])) == 0)
-    { // 指定服务端的ip地址。
+    { // 获取服务端的ip地址。
         printf("gethostbyname failed.\n");
         close(sockfd);
         return -1;
@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
     memset(&servaddr, 0, sizeof(servaddr));
 
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(atoi(argv[2])); // 指定服务端的通信端口。
-    memcpy(&servaddr.sin_addr, h->h_addr, h->h_length);
+    servaddr.sin_port = htons(atoi(argv[2]));           // 指定服务端的通信端口。
+    memcpy(&servaddr.sin_addr, h->h_addr, h->h_length); // 指定服务端的IP地址
     if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0)
     { // 向服务端发起连接清求。
         perror("connect");
