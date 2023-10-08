@@ -6,5 +6,4 @@
   - Portable OS Layer       : OS system calls
   - Machine-dependent Layer : Bootstrap, System initialization, I/O device driver, Kernel/User mode switching, Interrupt and exception, Provessor Management
  
-<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/typical_unix_os_structure.jpg", width="450px">
- 
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/typical_unix_os_structure.jpg" width="450px">
