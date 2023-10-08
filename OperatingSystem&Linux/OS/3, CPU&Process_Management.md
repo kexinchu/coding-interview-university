@@ -18,7 +18,7 @@
 ### PCB (Process Control Block)
 - 为每个程序分配的存放返回地址，变量信息的结构
 - 在程序交替执行期间，保存程序自身的状态，避免相互干扰
-  <img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_control_block.jpg" width="450px">
+  <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_control_block.jpg" width="450px">
 - 进程状态图
   ```
   // 新建态 -> 就绪态 <-> 运行态 -> 终止态
@@ -120,7 +120,7 @@ while (1) {
   - 进程 = 一个资源 + 多个指令执行序列;  是否能将进程中的资源与指令执行分开, 使得在切换时仅进行指令的切换，提高切换效率
     - 线程: 保留了并发的优点，又避免了进程切换的代价
     - 资源的切换在内存部分会讲，这里先将指令的切换(分治)
-    <img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_user_thread.jpg" width="450px">
+    <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread.jpg" width="450px">
   - 线程的切换：主动释放 yield + 同时触发 pthread_create
     - 问题1：如果多个应用程序执行时，共用一个栈；会造成当PC从线程B跳回到线程A且线程A需要弹栈时，因为此时栈尾是线程B的地址，所以会出bug。
       - 怎么解决：每个线程维护自己的栈空间，且每个线程仅允许在自己的栈空间操作
@@ -143,10 +143,10 @@ while (1) {
       }
       ```
   - 汇总
-  <img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_user_thread_sample.jpg", width="450px">
+  <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_sample.jpg", width="450px">
   - 用户级线程的问题：
     - Yield是用户程序，CPL=3；所以当某个线程进入内核执行并阻塞时(比如浏览器这里例子中，如果线程A进入内核执行，并申请IO下载数据)；此时内核不知道还有其他线程可以切换，而会直接进行进程的切换；导致用户级线程间的并发毫无作用。
-  <img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_user_thread_weakness.jpg", width="450px"> 
+  <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_weakness.jpg", width="450px"> 
     - 所以需要核心级线程，将TCB注册到内核中，内核管理TCB，实现内核在线程间切换 (并发性更好)
       - 核心级线程的切换(Schedule：有用户级线程的Yield区分开)，用户完全不可见，由系统来决定调度点
 
@@ -165,7 +165,7 @@ while (1) {
       |线程控制块|
   ```
   - 什么时候启用内核栈 - INT中断; 用户栈和内核栈之间的关联
-  <img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/userstack_to_kernelstack.jpg", width="450px">  
+  <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/userstack_to_kernelstack.jpg", width="450px">  
 
 
 ### 进程调度
@@ -176,15 +176,15 @@ while (1) {
 
 ### 多进程 && 内存
 - 多个进程同时存在于内存中会有什么问题？ - 内存竞争与覆盖
-<img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_memory_contention.jpg" width="250px">
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_memory_contention.jpg" width="250px">
 - 解决方法：
   - 虚拟内存(内存管理): 不同进程保存各自的虚拟内存，通过虚拟内存 -> 物理内存的映射来将不同进程的物理内存区分开
-<img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_memory_mapping.jpg" width="450px">
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_memory_mapping.jpg" width="450px">
 
 ### 多进程如何合作
 - 多进程交替直行时，会出现竞争；
   - 生产者-消费者实例中：因为交替执行，可能会导致任务队列的错误。(如下图的例子中，因为生产者和消费者交替执行，最后导致共享数据counter=4，而不是正确结果5)
-<img src="https://github.com/kexinchu/coding-interview-university/blob/main/OperatingSystem&Linux/pictures/process_producer-consumer_sample.jpg" width="450px">
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_producer-consumer_sample.jpg" width="450px">
 
  - 需要**进程同步**(合理的推进顺序)
    - 本例中，写共享数据counter时，应该阻断其他进程访问counter —— "锁"的引入
