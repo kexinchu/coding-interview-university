@@ -29,4 +29,5 @@
     - 比如：#define __NR_write	4 
   - 操作系统根据编号执行相应的代码
     - sys_call_table 全局函数数组，存放在include/linux/sys.h中
+
 <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/system_call_implementation.jpg" width="450px">
