@@ -118,10 +118,11 @@ while (1) {
   }
   ```
 
-- 用户级线程(User Thread)
+##### 用户级线程(User Thread)
   - 进程 = 一个资源 + 多个指令执行序列;  是否能将进程中的资源与指令执行分开, 使得在切换时仅进行指令的切换，提高切换效率
     - 线程: 保留了并发的优点，又避免了进程切换的代价
     - 资源的切换在内存部分会讲，这里先将指令的切换(分治)
+  - **核心：并发 - 同时注册 & 交替执行**
 
 <img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread.jpg" width="450px">
 
@@ -148,20 +149,21 @@ while (1) {
       ```
   - 汇总
 
-<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_sample.jpg", width="450px">
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_sample.jpg" width="450px">
 
   - 用户级线程的问题：
     - Yield是用户程序，CPL=3；所以当某个线程进入内核执行并阻塞时(比如浏览器这里例子中，如果线程A进入内核执行，并申请IO下载数据)；此时内核不知道还有其他线程可以切换，而会直接进行进程的切换；导致用户级线程间的并发毫无作用。
 
-<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_weakness.jpg", width="450px"> 
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/process_user_thread_weakness.jpg" width="450px"> 
 
     - 所以需要核心级线程，将TCB注册到内核中，内核管理TCB，实现内核在线程间切换 (并发性更好)
       - 核心级线程的切换(Schedule：有用户级线程的Yield区分开)，用户完全不可见，由系统来决定调度点
 
-- 核心级线程(Kernel Thread)
+##### 核心级线程(Kernel Thread)
   - 并发 与 并行的区别： 并发：同时触发，交替执行； 并行：真正意义上的并行处理。
-  - 内核级线程才能发挥多核处理器的性能（共享Cache和MMU(Memory Management Unit)，多核同时计算）
+  - **内核级线程才能发挥多核处理器的性能（共享Cache和MMU(Memory Management Unit)，多核同时计算）**
   - 因为执行的代码仍然在用户态，还是要进行函数调用的，所以用户栈还需要保留 => 需要两套栈 (两套栈要同步切换)
+    - 核心级线程中，Thread管理是系统调用 - 内核管理TCB + 内核负责切换线程 -> 内核栈
   ```
       |         |
       |  用户栈  |
@@ -172,9 +174,32 @@ while (1) {
       |         |
       |线程控制块|
   ```
-  - 什么时候启用内核栈 - INT中断; 用户栈和内核栈之间的关联
+  - **什么时候启用内核栈 - INT中断; 用户栈和内核栈之间的关联**
+    - 程序首先在用户栈执行，当执行INT中断之后，通过CPU硬件实现切换，切换到内核栈
+    - 切换是，需要压栈：用户栈地址, 状态, 以及下一条指令的PC,CS指针
+    ```
+      用户栈     内核栈
+                  |  源SS  |
+            INT   |  源SP  |
+            ===>  | EFLAGS |
+            <===  |  源PC  |
+            IRET  |  源CS  |
+                  | ？？？？|  => 这里存储的是一段包含iret的代码，能返回用户态
+    ```
 
-<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/userstack_to_kernelstack.jpg", width="450px">  
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/userstack_to_kernelstack.jpg" width="450px">  
+  
+  - 内核中的切换： switch_to(cur, next)
+    - 当内核中function进入阻塞态： 比如启动磁盘读，开始有内核管理任务switch
+    - 这里的 cur 和 next 分别指当前线程和下一个线程的TCB
+  
+  - 核心级线程的切换（switch_to的五段论）
+    - Step1, 中断入口，进入内核，并开始中断处理
+    - Step2/3/4, 在内核中，遇到阻塞需要执行切换时，先找到内核栈TCB，通过switch_to实现内核栈切换
+    - Step5, 通过内核栈IRET指令，完成用户栈的切换
+
+<img src="https://github.com/kexinchu/coding-interview-university/blob/master/OperatingSystem%26Linux/pictures/kernel_thread_switeh.jpg" width="450px">  
+
 
 
 ### 进程调度
