@@ -6,7 +6,7 @@ MySQL 使用三值逻辑 —— TRUE, FALSE 和 UNKNOWN。任何与 NULL 值进�
 
 ## 实际做题记录
 #### DISTINCT 关键字用于过滤重复元素
-#### 排序: ORDER BY
+#### 排序: ORDER BY; 按照多个维度排序时用逗号隔开
 ```
 # LeetCode 1148. 文章浏览I
 
@@ -18,6 +18,27 @@ WHERE
     author_id = viewer_id
 ORDER BY
     id
+
+# LeetCode 1663. 各赛事的用户注册率
+
+# 有人可能没有注册任何比赛
+# LEFT JOIN Register 到 Users 会导致contest列出现null
+SELECT 
+    r.contest_id,
+    ROUND(COUNT(r.user_id) / (SELECT COUNT(*) FROM Users) * 100, 2) AS percentage
+FROM
+    Users AS u
+LEFT JOIN
+    Register AS r
+ON
+    u.user_id = r.user_id
+WHERE
+    r.contest_id is not NULL
+GROUP BY
+    r.contest_id
+ORDER BY
+    percentage DESC,
+    contest_id ASC
 ```
 
 ### 计算字符串长度： CHAR_LENGTH 和 LENGTH
