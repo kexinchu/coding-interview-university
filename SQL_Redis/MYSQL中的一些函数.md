@@ -23,3 +23,43 @@ WHERE
 GROUP BY
     p.product_id
 ```
+
+### ROUND 保留小数点后位数
+### SUM 求和
+### AVG 求平均值
+### COUNT 计数
+- 用于计算某种情况出现的概率
+```
+# LeetCode 1211, 查询结果的质量和占比
+
+SELECT
+    query_name,
+    ROUND(AVG(rating / position), 2) AS quality,
+    ROUND(SUM(IF(rating < 3, 1, 0)) * 100 / COUNT(*), 2) as poor_query_percentage
+FROM
+    Queries
+WHERE
+    query_name IS NOT NULL 
+    AND result IS NOT NULL
+GROUP BY
+    query_name
+```
+
+
+## 针对日期的函数
+### DATE_SUB / DATE_ADD 实现日期的加减
+```
+# LeetCode 1141. 查询近30天的活跃用户数
+
+SELECT
+    activity_date AS day,
+    COUNT(DISTINCT user_id) as active_users
+FROM
+    Activity
+WHERE
+    activity_date BETWEEN DATE_SUB('2019-07-27', INTERVAL 29 day) AND '2019-07-27'
+GROUP BY
+    activity_date
+ORDER BY
+    activity_date
+```
