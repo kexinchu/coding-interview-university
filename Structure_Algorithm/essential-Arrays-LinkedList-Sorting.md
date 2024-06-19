@@ -1,11 +1,99 @@
 ## 数据结构
-- ### 数组（Arrays）
-    - 实现一个可自动调整大小的动态数组。
-    - [x] 介绍：
-        - [数组（视频）](https://www.coursera.org/learn/data-structures/lecture/OsBSF/arrays)
-        - [UC Berkeley CS61B - 线性数组和多维数组（视频）](https://archive.org/details/ucberkeley_webcast_Wp8oiO_CZZE)（从15分32秒开始）
-        - [动态数组（视频）](https://www.coursera.org/learn/data-structures/lecture/EwbnV/dynamic-arrays)
-        - [不规则数组（视频）](https://www.youtube.com/watch?v=1jtrQqYpt7g)
+- ### 数组（Arrays）和 链表 (Linked Lists)
+    - [x] 不同语言下的封装：
+      - 数组： 对于随机访问的速度很快，但是对于插入（尤其是从头部插入元素）速度很慢，在尾部插入很快。 —— 涉及数据copy
+      - 链表： 对于随机访问速度慢的多，对于插入会快很多
+        - 单向链表
+        - 双向链表
+
+    ```C++
+    // C++; C++ 标准库头文件
+    #include <iostream>
+    #include <vector>
+    using namespace std;
+    // array 指定长度，如果不确定长度，使用 n[] = {1,2,3,4,5}
+    // 固定长度
+    int n[5] = {1,2,3,4,5};
+
+    // vector 是对数组的封装, 使用连续内存存储
+    vector<int> n = {1,2,3,4,5};
+
+    // list 是对链表的封装, 使用非连续存储，不支持[]下标访问
+    list<int> n = {1,2,3,4,5};
+    ```
+
+    ```Golang
+    // Golang 并没有提供 Linked Lists 的数据结构
+    // 全局：
+    var arr0 [5]int = [5]int{1, 2, 3}
+    var arr1 = [5]int{1, 2, 3, 4, 5}
+    var arr2 = [...]int{1, 2, 3, 4, 5, 6}
+    var str = [5]string{3: "hello world", 4: "tom"}
+    // 局部：
+    a := [3]int{1, 2}           // 未初始化元素值为 0。
+    b := [...]int{1, 2, 3, 4}   // 通过初始化值确定数组长度。
+    c := [5]int{2: 100, 4: 200} // 使用索引号初始化元素。
+    d := [...]struct {
+        name string
+        age  uint8
+    }{
+        {"user1", 10}, // 可省略元素类型。
+        {"user2", 20}, // 别忘了最后一行的逗号。
+    }
+    // Note: 数组是定长的, 长度定义之后不能再修改
+    
+    
+    // Slice 是数组的一个封装，通过内部指针和相关属性引用数组片段. (数组的引用), 也支持通过下标访问引用的数组元素. 
+    // Slice 是引用类型，但是本身是结构体，还是值传递。
+    // Slice实际上是一个结构体：底层的存储类型是数组
+    // runtime/slice.go
+    type slice struct {
+        array unsafe.Pointer // 元素指针
+        len   int // 长度 
+        cap   int // 容量
+    }
+    // Node: 底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。
+    slice := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+    s1 := slice[2:5]
+    s2 := s1[2:6:7]
+
+    s2 = append(s2, 100)
+    s2 = append(s2, 200)
+
+    s1[2] = 20
+    ```
+
+    ```python
+    #python 中的 List 底层是数组结构
+    list_ = [1, 2, 3]
+    ```
+
+    ```Rust
+    // Rust 数组 和 切片
+    // 定长数组（类型标记是多余的）
+    let xs: [i32; 5] = [1, 2, 3, 4, 5];
+
+    // 所有元素可以初始化成相同的值
+    let ys: [i32; 500] = [0; 500];
+
+    // 数组可以自动被借用成为 slice
+    analyze_slice(&xs);
+
+    // slice 可以指向数组的一部分
+    analyze_slice(&ys[1 .. 4]);
+    ```
+
+    - [ ] 数组 vs. 链表的
+        - 关于 插入、查找、删除操作 的复杂度
+        <img src="../pictures/bigO-for-common-data-structure-ops.jpg" width=800px>
+        - 链表方便写，数组方便读
+        - [基本链表 Vs 数组（视频）](https://www.coursera.org/lecture/data-structures-optimizing-performance/core-linked-lists-vs-arrays-rjBs9)
+        - [在现实中，链表 Vs 数组（视频）](https://www.coursera.org/lecture/data-structures-optimizing-performance/in-the-real-world-lists-vs-arrays-QUaUd)
+        - [x] [为什么你需要避免使用链表（视频）](https://www.youtube.com/watch?v=YQs6IC-vgmo)
+            - array是连续存储的，这是的array比链表快很多。
+        - [ ] 的确：你需要关于“指向指针的指针”的相关知识：（因为当你传递一个指针到一个函数时，该函数可能会改变指针所指向的地址）该页只是为了让你了解“指向指针的指针”这一概念。但并不推荐这种链式遍历的风格。因为，这种风格的代码，其可读性和可维护性太低。
+        - [指向指针的指针](https://www.eskimo.com/~scs/cclass/int/sx8.html)
+
     - [ ] 实现一个动态数组（可自动调整大小的可变数组）：
         - [ ] 练习使用数组和指针去编码，并且指针是通过计算去跳转而不是使用索引
         - [ ] 通过分配内存来新建一个原生数据型数组
@@ -32,6 +120,24 @@
         - 因为在内存中分配的空间邻近，所以有助于提高性能
         - 空间需求 = （大于或等于 n 的数组容积）* 元素的大小。即便空间需求为 2n，其空间复杂度仍然是 O(n)
 
+    - [ ] 实现（我实现了使用尾指针以及没有使用尾指针这两种情况）：
+        - [ ] size() —— 返回链表中数据元素的个数
+        - [ ] empty() —— 若链表为空则返回一个布尔值 true
+        - [ ] value_at(index) —— 返回第 n 个元素的值（从0开始计算）
+        - [ ] push_front(value) —— 添加元素到链表的首部
+        - [ ] pop_front() —— 删除首部元素并返回其值
+        - [ ] push_back(value) —— 添加元素到链表的尾部
+        - [ ] pop_back() —— 删除尾部元素并返回其值
+        - [ ] front() —— 返回首部元素的值
+        - [ ] back() —— 返回尾部元素的值
+        - [ ] insert(index, value) —— 插入值到指定的索引，并把当前索引的元素指向到新的元素
+        - [ ] erase(index) —— 删除指定索引的节点
+        - [ ] value_n_from_end(n) —— 返回倒数第 n 个节点的值
+        - [ ] reverse() —— 逆序链表
+        - [ ] remove_value(value) —— 删除链表中指定值的第一个元素
+    - [x] 双向链表
+        - [介绍（视频）](https://www.coursera.org/learn/data-structures/lecture/jpGKD/doubly-linked-lists)
+        - 并不需要实现
 
 ## 排序（Sorting）
 
