@@ -1,3 +1,4 @@
+## 变量 & 常量
 ### 定义变量
 
 ```Go
@@ -116,7 +117,7 @@ const (
 )
 ```
 
-## 首字母 大写 vs 小写
+### 首字母 大写 vs 小写
 - 变量 & 函数: 首字母大写表示公有，可以被其他包读取，小写表示私有，表示不可导出
 
 
@@ -191,14 +192,14 @@ fmt.Println("第三个数字是: ", numbers["three"]) // 读取数据
 ```
 
 
-## make 和 new 操作
+### make 和 new 操作
 - make 用于内建类型（map、slice 和 channel）的内存分配
     - 返回初始化后的（非零）值
 - new 用于各种类型的内存分配, 
     - 返回值是对应内存地址的指针
 
 
-## 零值 - 变量未填充前的默认值
+### 零值 - 变量未填充前的默认值
 
 ```Go
 int     0
@@ -213,3 +214,197 @@ float64 0 // 长度为 8 byte
 bool    false
 string  ""
 ```
+
+## 流程控制
+- if
+    - Golang 中的if判断不需要"()"
+    - 允许在条件判断语句中声明变量 - 这个变量的作用域只在该条件判断逻辑块内
+    - 多个条件可以使用 "else if" 
+- goto
+    - goto 语句 —— 请明智地使用它。用 goto 跳转到必须在当前函数内定义的标签。
+- for
+    - Golang中没有while，但是for支持while的功能(";"都可以省略)：for sum < 1000 { ... }
+    - 其他的跟C++一致，不需要 "()"
+    - "break" 和 "continue" 都是支持的
+    - "for" 配合 "range" 可以用于读取 slice 和 map 的数据
+- switch
+    - Golang中，switch相当于每个 case 后面都带有break (不像C++ 需要手动加上break, 默认会按顺序继续执行下一个case分支)
+    - 可以通过fallthrough来强制执行后面的case，跟C++打平效果
+```Go
+import (
+    "fmt"
+)
+
+// if
+// 计算获取值x，然后根据x返回的大小，判断是否>10
+if x := computedValue(); x>10 {
+    fmt.Println("...")
+}
+
+// goto - 实现了一个循环
+func myFunc() {
+    i := 0
+Here:   // 这行的第一个词，以冒号结束作为标签
+    println(i)
+    i++
+    goto Here   // 跳转到 Here 去
+}
+
+// for
+sum := 0;
+// 标准格式
+for index:=0; index < 10 ; index++ {
+    sum += index
+}
+// expression1 和 expression3 可以忽略
+for ; sum < 100; {
+    sum += sum
+}
+// 全部忽略 - 类似 while 的功能
+for sum < 1000 {
+    sum += sum
+}
+// range
+for key, value := range map {
+    fmt.Println("map's key:",k)
+    fmt.Println("map's val:",v)
+}
+
+// switch
+// 默认会带上 break
+i := 10
+switch i {
+case 1:
+    fmt.Println("i is equal to 1")
+case 2, 3, 4:
+    fmt.Println("i is equal to 2, 3 or 4")
+case 10:
+    fmt.Println("i is equal to 10")
+default:
+    fmt.Println("All I know is that i is an integer")
+}
+// fallthrough强制执行后面的case代码
+integer := 6
+switch integer {
+case 5:
+    fmt.Println("The integer was <= 5")
+    fallthrough
+case 6:
+    fmt.Println("The integer was <= 6")
+    fallthrough
+case 7:
+    fmt.Println("The integer was <= 7")
+    fallthrough
+default:
+    fmt.Println("default case")
+}
+// 结果：
+// The integer was <= 6
+// The integer was <= 7
+// default case 
+```
+
+## 函数
+- Go 函数可以返回多个值
+- Go 支持命令返回参数的变量，这样函数内不需要初始化变量 + 返回的时候也可以不带上变量名
+- 支持变参: 有着不定数量的参数
+- <font color=red>**Go只支持 "值传递"**</font>
+    - Golang的函数传递只支持值传递，传递的都是变量的copy
+    - 传递指针参数 "x *int" 时，也是传递的指针参数值的copy
+- <font color=blue>因为 Golang 有值类型 和 引用类型 的区分，导致某些传递看起来像是引用传递</font>
+    - 值类型: 变量直接存储值，内存通常在栈上分配，在函数调用完被释放。
+        - int
+        - float
+        - bool
+        - string
+        - array
+        - struct
+    - 引用类型: 变了存储的是一个地址，这个地址上才存储的最终的value，内存通常在堆上分配，通过GC回收
+        - slice
+        - map
+        - channel
+        - interface
+        - func
+- defer语句
+    - 你可以在函数中添加多个 defer 语句。当函数执行到最后时，这些 defer 语句会按照逆序执行，最后该函数返回。
+    - 一般是当你在进行一些打开资源的操作时，为了保证在遇到错误需要提前返回时关闭相应的资源，避免资源泄露问题。会在资源打开的位置加上对应的defer语句
+- <>Go中函数 作为 变量
+    - 通过 type 来定义函数变量的类型
+- "panic" 和 "recover"
+    - panic 是一个内建函数，可以中断原有的函数控制流程(但是函数中的defer可以正常执行)，并中断该goroutine中所有调用的函数.
+    - recover仅在延迟函数中有效, 捕获panic, 并恢复正常执行
+- init 和 main 函数
+    - go程序会自动调用
+    - main函数只能应用在 package main中
+    - init函数可以在任意 package 中；强烈建议 一个package的一个文件中只写一个init函数
+
+<img src="./pictures/package-init-main.png" width=800px>
+
+```Go
+// 直接定义返回参数的变量 - 函数中不需要定义和初始化了
+func SumAndProduct(A, B int) (add int, Multiplied int) {
+    add = A+B
+    Multiplied = A*B
+    return
+}
+
+// 变参
+func myfunc(args ...int) {
+    for _, n := range args {
+        fmt.Printf("And the number is: %d\n", n)
+    }
+}
+
+// 传递值 vs 传递指针
+func add_value(a int) {
+    a = a+1
+}
+
+func add_pointer(a *int) {
+    *a = *a+1
+}
+x:=3
+add_value(x)       // x 依旧 = 3
+add_pointer(&x)    // x = 4
+
+// defer语句
+func ReadWrite() bool {
+    file.Open("file")
+    defer file.Close()      // defer
+    if failureX {
+        return false
+    }
+    if failureY {
+        return false
+    }
+    return true
+}
+
+// 函数作为值，类型
+type testInt func(int) bool  // 声明了一个函数类型
+
+func isOdd(integer int) bool {
+    if integer % 2 == 0 {
+        return false
+    }
+    return true
+}
+func isEven(integer int) bool {
+    if integer%2 == 0 {
+        return true
+    }
+    return false
+}
+// 下面将声明的函数类型作为参数传递给另一个函数
+func filter(slice []int, f testInt) (result []int) {
+    for _, value := range slice {
+        if f(value) {
+            result = append(result, value)
+        }
+    }
+}
+
+```
+
+## struct 结构体
+
