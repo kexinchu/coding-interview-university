@@ -69,8 +69,8 @@ mips_syscall(struct trapframe *tf)
 
 	switch (callno) {
 	    case SYS_reboot:
-		err = sys_reboot(tf->tf_a0);
-		break;
+			err = sys_reboot(tf->tf_a0);
+			break;
 
 	    /* Add stuff here */
 		case SYS__exit:
@@ -79,23 +79,26 @@ mips_syscall(struct trapframe *tf)
 			break;
 
 		case SYS_printint:
-			int32_t retval = sys_printint((int)tf->tf_a0);
+			retval = sys_printint((int)tf->tf_a0);
 			tf->tf_v0 = retval;
 			err = 0;
-			break
+			break;
 
-		case SYS_reversestring:
+		case SYS_reversestring:{
+			// 较老的版本不支持在switch代码块中生命声明变量
+			// 或者将str 和 len的声明放在switch前面
 			const char *str = (const char *)tf->tf_a0;
 			int len = (int)tf->tf_a1;
-			int32_t retval = sys_reversestring(str, len);
+			retval = sys_reversestring(str, len);
 			tf->tf_v0 = retval;
 			err = 0;
-			break
+			break;
+		}
  
 	    default:
-		kprintf("Unknown syscall %d\n", callno);
-		err = ENOSYS;
-		break;
+			kprintf("Unknown syscall %d\n", callno);
+			err = ENOSYS;
+			break;
 	}
 
 

@@ -182,25 +182,15 @@ int sys_printint(int code) {
  * added syscall reversestring
  */
 int sys_reversestring(const char *str, int len) {
-    // Create a buffer to store the string from user space
-    char buffer[256];  // Assuming a max size for simplicity, can be adjusted
-
-    // Copy the string from user space to kernel space
-    int result = copyin((const_userptr_t)str, buffer, len);
-    if (result) {
-        return result;  // Return the error code from copyin
-    }
-
-    // Null-terminate the string
-    buffer[len] = '\0';
-
-    // Print the reverse of the string
-    for (int i = len - 1; i >= 0; i--) {
-        kprintf("%c", buffer[i]);
+    // 打印字符串的反转
+	// C99 版本才开始支持在for循环中声明变量
+	int i;
+    for (i = len - 1; i >= 0; i--) {
+        kprintf("%c", str[i]);  // 假设 str 已经在内核空间
     }
     kprintf("\n");
 
-    // Return 1 if length is a multiple of 5, otherwise 0
+    // 返回 1 如果字符串长度是 5 的倍数，否则返回 0
     if (len % 5 == 0) {
         return 1;
     }
