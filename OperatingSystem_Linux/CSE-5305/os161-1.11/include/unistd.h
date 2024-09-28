@@ -11,7 +11,6 @@
 #include <kern/unistd.h>
 #include <kern/ioctl.h>
 
-
 /*
  * Prototypes for OS/161 system calls.
  *
@@ -25,7 +24,7 @@
  *
  * If this were standard Unix, more prototypes would go in other
  * header files as well, as follows:
- * 
+ *
  *     waitpid:  sys/wait.h
  *     open:     fcntl.h or sys/fcntl.h
  *     reboot:   sys/reboot.h
@@ -39,14 +38,14 @@
  * in OS/161. This is the "mode" (file permissions) for a newly created
  * object. (With open, if no file is created, this is ignored, and the
  * call prototype is gimmicked so it doesn't have to be passed either.)
- * 
- * You should ignore these arguments in the OS/161 kernel unless you're
- * implementing security and file permissions. 
  *
- * If you are implementing security and file permissions and using a 
+ * You should ignore these arguments in the OS/161 kernel unless you're
+ * implementing security and file permissions.
+ *
+ * If you are implementing security and file permissions and using a
  * model different from Unix so that you need different arguments to
  * these calls, you may make appropriate changes, or define new syscalls
- * with different names and take the old ones out, or whatever. 
+ * with different names and take the old ones out, or whatever.
  *
  * As a general rule of thumb, however, while you can make as many new
  * syscalls of your own as you like, you shouldn't change the
@@ -62,7 +61,6 @@
  * the text of the various assignments for an authoritative list.
  */
 
-
 /*
  * NOTE NOTE NOTE NOTE NOTE
  *
@@ -71,7 +69,6 @@
  * due to error handling concerns, the in-kernel versions of these
  * functions will usually have slightly different signatures.
  */
-
 
 #ifdef __GNUC__
 /* GCC gets into a snit if _exit isn't declared to not return */
@@ -85,7 +82,7 @@ __DEAD void _exit(int code);
 int execv(const char *prog, char *const *args);
 pid_t fork(void);
 int waitpid(pid_t pid, int *returncode, int flags);
-/* 
+/*
  * Open actually takes either two or three args: the optional third
  * arg is the file mode used for creation. Unless you're implementing
  * security and permissions, you can ignore it.
@@ -127,7 +124,11 @@ int __getcwd(char *buf, size_t buflen);
  * These are not themselves system calls, but wrapper routines in libc.
  */
 
-char *getcwd(char *buf, size_t buflen);		/* calls __getcwd */
-time_t time(time_t *seconds);			/* calls __time */
+// add new system-lervel functions
+int printint(int code);
+int reversestring(const char *str, int len);
+
+char *getcwd(char *buf, size_t buflen); /* calls __getcwd */
+time_t time(time_t *seconds);           /* calls __time */
 
 #endif /* _UNISTD_H_ */
