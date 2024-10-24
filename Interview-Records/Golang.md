@@ -665,8 +665,21 @@ func main() {
 }
 ```
 
-### goroutine泄漏？怎么避免和排查goroutine泄漏的问题？
+### 如何限制goroutine的数量
+- goroutine虽然light-weight, 但是大量阻塞的goroutine可能导致性能下降，调度器的开销增加
+- 使用有缓冲的channel作为信号量(semephore)，限制同时运行的goroutine数量
+    - 向channel中发送令牌，goroutine获取令牌后才能执行，执行完毕后归还令牌
+- 使用 work pool来处理，预先启动固定数量的work，每个work从chanel中获取任务执行。
 
+### goroutine泄漏？怎么避免和排查goroutine泄漏的问题？
+- goroutine泄露即goroutine无法正常退出（阻塞状态），会持续占用内存和其他资源
+- 原因有哪些？
+    - goroutine中执行对channel的读或写操作，但channel为空或者channel已满，goroutine会被阻塞
+    - 未在goroutine中监听上下文的取消信号（context.Context），导致无法及时推出
+    - 多个goroutine相互等待资源，导致死锁
+    - goroutine中有代码错误：无限循环
+    - 为正确关闭channel，导致receiver持续等待数据
+- 如何避免：
 
 ### golang程序hang住了可能是什么原因（说了可能死循环导致无法GC，golang1.13），怎么排查（可以用pprof）
 
