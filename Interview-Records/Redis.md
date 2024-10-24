@@ -31,13 +31,27 @@
 - 集合（Set）
     - 底层是hash表，无序
 - 有序集合（Sorted Set）
-    - 跳表实现
+    - 通过skipList + hash table实现
 - hash (key-value 集合)
 
 - Redis的有序集合（Sorted Set）通过跳表实现元素的快速查找、插入、删除。
     - 跳表支持范围查询
     - 跳表（Skip List）通过为有序链表添加多层索引，来加速查找、插入和删除操作。它的时间复杂度可以达到 O(log n)。
 
+### Redis的大部分命令都是原子操作
+
+### 单线程 & 多线程
+- Redis 主要是单线程的，但利用了I/O多路复用机制来处理大量的并发连接
+- Redis 的一些后台任务（如持久化数据快照RDB，AOF重写等）会由独立的后台线程或子进程处理
+- Redis 实现多线程
+    - Redis 6.0版本之后引入了多线程I/O来提升网络I/O性能
+    - Redis 的命令执行仍然是单线程
+    - 可以通过多线程方式处理网络事件(读取请求，写入响应)，从而提高 Redis 的网络处理能力
+    ```shell
+    # 配置文件中启用多线程
+    io-threads-do-reads yes
+    io-threads 4  # 设定线程数
+    ```
 
 ### Redis设置过期时间
 ```shell
