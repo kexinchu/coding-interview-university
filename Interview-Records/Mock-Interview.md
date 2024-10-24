@@ -175,3 +175,15 @@
 cat /proc/${PID}/status | grep PPid
 ```
 
+面经：
+https://juejin.cn/post/6967618371844046856#heading-8
+
+https://tehub.com/a/d6RPhBudZ2
+
+https://cloud.tencent.com/developer/article/2045555
+
+https://www.cnblogs.com/wangzhongyang/p/17798074.html
+
+https://www.nowcoder.com/discuss/353156428804333568
+
+https://www.nowcoder.com/discuss/603841169302245376
