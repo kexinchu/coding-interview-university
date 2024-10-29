@@ -105,7 +105,7 @@
     ```
     - 通过 动态派发机制 来实现接口调用的多态行为
         - 先通过type确定具体类型
-        - 通过itab中的放发表来找到实现该接口的具体方法地址
+        - 通过itab中的方法表来找到实现该接口的具体方法地址
         - 最后调用具体的实现
 
 ### map
@@ -213,6 +213,23 @@
             - 优势：读操作不需要加锁，性能很好；无需开发人员手动加锁，降低了并发编程的复杂性
             - 劣势：在高并发下，写性能甚至可能不如手动加锁的map，sync.Map内部结构复杂，内存开销大； 类型断言增加开销
             - 使用场景：读多写少的场景，适合快速开发
+
+### 面试问题: Map 的key可以是哪些类型？ struct可以当作Map的key吗？
+- Map的 key类型 要求必须支持 $==$ 和 $!=$ 运算，对键进行查找时需要
+- 支持的类型
+    - 内置类型
+        - bool
+        - 数字类型： int, int8, ...; uint, uint8, ...; float32, float64
+        - 字符串：string
+        - 指针类型：任何指针类型都可以作为map的key
+    - 结构体类型
+        - If 结构体的所有字段都可以比较，那么此结构体类型就可以作为map的key
+    - 接口类型
+        - If 接口类型的动态类型具体到可比较类型，则此接口类型可以作为map的key
+- 不支持的类型
+    - Slice 和 Map：都是引用类型，无法进行 $==$ 比较，因此不能作为 key
+    - func : 函数类型无法比较 $==$
+
 
 ### channel
 - 用于在goroutine之间通信，可以在不同的goroutine之间传递数据
@@ -363,6 +380,38 @@ func main() {
 
 ```
 
+# 对已经关闭的channel读写 和 对未初始化的channel读写 分别会怎么样？
+- 读已关闭channel
+    - 如果channel关闭前，Buffer中还有元素未读，会正确读到channel的值，且返回的 ok 为True (直到取完Buffer中的值为止)
+    - 如果channel关闭前，Buffer已经为空，接下来所有读channel都会非阻塞直接成功，返回 channel 元素的零值，且 ok 一直为 False。
+    ```go
+    import (
+        "fmt"
+    )
+
+    func main(){
+        chA := make(chan int, 3)
+        chA <- 1
+        chA <- 2
+        close(chA)
+        
+        num, ok := <-chA
+        fmt.Printf("num: %d, ok: %v\n", num, ok)  // num: 1, ok: true
+
+        num, ok = <-chA
+        fmt.Printf("num: %d, ok: %v\n", num, ok)  // num: 2, ok: true
+
+        num, ok = <-chA
+        fmt.Printf("num: %d, ok: %v\n", num, ok)  // num: 0, ok: false
+    }
+    ```
+- 写已关闭channel
+    - 导致panic
+- 读写 未初始化 的channel都会阻塞
+    - 在源码 src/runtime/chan.go 中, 未初始化的channel就等于nil
+    - 当 chan 不能阻塞时，会直接返回 false，表示读/写 chan 失败
+    - 当 chan 能阻塞时，会直接阻塞
+
 ### select
 - select中如果没有default会出现什么情况？
     - select会阻塞，直到有case可以执行
@@ -370,12 +419,14 @@ func main() {
 
 - 当多个case同时就绪时，select会随机选择一个执行(避免某些通道长期得不到处理)
 
-- case中的channel被关闭了会出现什么情况？（只有这一个的话会死循环，可以用,ok判断一下）
-    - channel关闭的影响
-        - 从一个已关闭的通道接收数据时，如果通道中还有缓存的数据，会先接收到缓存的数据；如果通道已空，则会立即返回零值，且通道不会阻塞。
-        - 向一个已关闭的通道发送数据会引发 运行时 panic。
-    - 如果只有一个 接收case 且 channel关闭的话，可能会导致死循环（不停的从channel中接收到0值）
-        - 使用 ,ok 判断一下
+- case中的channel被关闭了会出现什么情况？。
+    - for循环select时候，如果其中一个case channel已经关闭，则每次都会执行这个select。
+        - 解决：
+            - 使用 value, ok := <-chA 判断一下，当 chA 已经关闭时，ok = False, value = 0;
+            - 当 ok = False时，let chA = nil, 则 <-chA 相当于读一个未初始化的channel，会一直阻塞
+            - 这样当select中有任意case可以执行时，会跳过当前阻塞的这个case。 这样就解决了一直读已关闭channel的问题
+    - 如果select里只有一个 case 且 channel关闭的话，会导致死循环（不停的从channel中接收到0值）
+        - 使用 ok 判断一下
 
 
 ### panic & recover
@@ -464,6 +515,10 @@ func main() {
         method := v.MethodByName("SayHello")   // get func based on name
         method.Call(nil)
     }
+    // print
+    // Field 0: Alice
+    // Field 1: 30
+    // Hello, my name is Alice
     ```
 - 注意 直接通过reflect.ValueOf(x)获取的Value通常是不可修改的，因为它是一个值拷贝
     - 可以通过指针的方式去修改
@@ -498,6 +553,61 @@ func main() {
         fmt.Println("Person:", p)
     }
     ```
+- reflect 如何获取字段tag
+    - 可以通过 t.Field(i).Tag.Get("json") 和 t.Field(i).Tag.Get("otherTag") 来读取字段tag
+    ```go
+    type J struct {
+        a string //小写无tag
+        b string `json:"B"` //小写+tag
+        C string //大写无tag
+        D string `json:"DD" otherTag:"good"` //大写+tag
+    }
+
+    func printTag(stru interface{}) {
+        t := reflect.TypeOf(stru).Elem()    // 获取值对应的结构体内容
+        for i := 0; i < t.NumField(); i++ {
+            fmt.Printf("结构体内第%v个字段 %v 对应的json tag是 %v , 还有otherTag？ = %v \n", 
+            i+1, 
+            t.Field(i).Name, 
+            t.Field(i).Tag.Get("json"),         // json tag
+            t.Field(i).Tag.Get("otherTag"))     // otherTag
+        }
+    }
+    ```
+
+
+### json包使用时，结构体的变量下不加tag能不能正常转为json的字段
+- 如果变量首字母小写，则为private，无论如何不能转，因为取不到反射信息
+- 如果变量首字母大小，则为public
+    - 不加tag，可以正常转为json里的字段，json内字段名和结构体内字段原名一致
+    - 加tag，从 struc 转为json的时候，json的字段名就是tag里的名字，原字段名不再使用
+```go
+import (
+    "encoding/json"
+    "fmt"
+)
+type J struct {
+    a string             //小写无tag
+    b string `json:"B"`  //小写+tag
+    C string             //大写无tag
+    D string `json:"DD"` //大写+tag
+}
+func main() {
+    j := J {
+    a: "1",
+    b: "2",
+    C: "3",
+    D: "4",
+    }
+    fmt.Printf("转为json前j结构体的内容 = %+v\n", j)
+    jsonInfo, _ := json.Marshal(j)
+    fmt.Printf("转为json后的内容 = %+v\n", string(jsonInfo))
+}
+// 输出
+// 转为json前j结构体的内容 = {a:1 b:2 C:3 D:4}
+// 转为json后的内容 = {"C":"3","DD":"4"}
+```
+- json包里不能导出私有变量的tag是因为json包里认为私有变量为不可导出的Unexported
 
 
 ### context.Context
@@ -686,8 +796,153 @@ func main() {
     - 为正确关闭channel，导致receiver持续等待数据
 - 如何避免：
 
+- 如何排查：
+    在pprof交互界面中，可以使用goroutine命令查看goroutine的堆栈信息，找出未退出的goroutine。
+
 ### golang程序hang住了可能是什么原因（说了可能死循环导致无法GC，golang1.13），怎么排查（可以用pprof）
+- 死循环导致无法GC (GC无法抢占执行)
+- 死锁
+- 阻塞操作未执行
+- Goroutine泄露导致性能下降甚至卡死
 
 
+### golang的内存拷贝
+- 只要是发生类型强制转换都会发生内存拷贝
+- go中将字符串转换成[]byte数组时，发生了类型转换（go中string时不可变的，[]byte是可变的，为了保证string的不可变性，copy了一个新的字节数组）
+    - 其实 slice 的struct 底层通过uintptr指向 数组，string也是一样的。
+    - 可以通过unsafe包将指针地址进行copy来避免内存拷贝，但这是不安全的
 
 
+### Golang 的内存逃逸
+- golang程序变量会携带有一组校验数据，用来证明它的整个生命周期是否在运行时完全可知。如果变量通过了这些校验，它就可以在栈上分配。否则就说它 逃逸 了，必须在堆上分配。  (逃逸： 栈空间 -> 堆空间)
+- 哪些情况下会发生？
+    - 在方法中将局部变量的指针组为返回值
+        - 指针被外部引用，导致其声明周期大于func的栈空间，溢出到堆上
+    - 发送指针或者带有指针的值到channel中
+        - 在编译时无法知道哪个goroutine会在channel上接收数据，所以编译器无法知道合适释放
+    - 在一个Slice上存储指针或者带指针的值
+        - 例如 []*string, 尽管背后的数组在栈上，但是引用的值肯定在堆上
+    - Slice背后数组被重新分配(append 超过了cap)
+        - slice最开始初始化在栈上，当背后的数组需要扩充之后，就会在堆上分配
+    - 在interface上调用方法
+        - 动态调度
+- 怎么查看逃逸的情况
+    ```shell
+    go build --gcflags=-m sample.go # 可以查看逃逸情况
+    ```
+
+
+### 翻转含有中文，数字，英文字母的字符串
+- rune关键字，从 golang 源码中看出，它是 int32 的别名（-2^31 ~ 2^31-1），比起 byte（-128 ～ 127），可表示更多的字符。
+- 由于 rune 可表示的范围更大，所以能处理一切字符，当然也包括中文字符。在平时计算中文字符，可用 rune。
+
+```go
+import "fmt"
+
+func reverse(s []rune) []rune {
+    for i, j := 0, len(s) - 1; i < j; i, j = i+1, j-1{
+        s[i] s[j] = s[j], s[i]
+    }
+    return s
+}
+
+func main() {
+    src := "你好abc123"
+    dst := reverse([]rune(src))
+    fmt.print("%v\n", string(dst))
+}
+```
+
+
+### 为sync.WaitGroup实现一个timeout功能
+```go
+func main() {
+	wg := sync.WaitGroup{}
+	c := make(chan struct{})
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(num int, close <-chan struct{}) {
+			defer wg.Done()
+			<-close
+			fmt.Println(num)
+		}(i, c)
+	}
+
+	if WaitTimeout(&wg, time.Second*5) {
+		close(c)
+		fmt.Println("timeout exit")
+	}
+	time.Sleep(time.Second * 10)
+}
+
+func WaitTimeout(wg *sync.WaitGroup, timeout time.Duration) bool {
+	// 要求手写代码
+	// 要求sync.WaitGroup支持timeout功能
+	// 如果timeout到了超时时间返回true
+	// 如果WaitGroup自然结束返回false
+	ch := make(chan bool, 1)
+
+	go time.AfterFunc(timeout, func() {
+		ch <- true
+	})
+
+	go func() {
+		wg.Wait()
+		ch <- false
+	}()
+	
+	return <- ch
+}
+```
+
+### golang的nil切片 和 空切片的区别？
+- nil slice
+    - 未初始化的slice，其值为nil； var s []T
+    - 长度和容量都为0
+    - nil slice的底层数组指针也是nil
+- 空slice
+    - 初始化了，但是长度和容量为0的slice
+    - 空slice的底层数组指针指向一个分配的内存区域（但没有存储数据）
+    - make([]T,0) 或者 []T{} 都会生成一个空 slice
+    - 注意：空切片底层数组指向的地址指向的是一个固定值，既所有空切片都指向这个地址
+
+### 分析输出
+```go
+
+type Student struct {
+    Name string
+}
+
+func main() {
+    fmt.Println(&Student{Name: "menglu"} == &Student{Name: "menglu"})  // false  指针
+    fmt.Println(Student{Name: "menglu"} == Student{Name: "menglu"})    // true   值
+}
+
+
+func main() {
+    fmt.Println([...]string{"1"} == [...]string{"1"}) // true, 比较的是数组
+    fmt.Println([]string{"1"} == []string{"1"}) // invalid, slice不支持比较
+}
+
+// 下面 在for循环里append会造成死循环吗？
+func main() {
+	s := []int{1,2,3,4,5}
+	for _, v:=range s {
+		s =append(s, v)
+		fmt.Printf("len(s)=%v\n",len(s))
+	}
+}
+// 答： 不会，因为for range 在循环开始前会获取切片长度，然后再执行循环体
+```
+
+
+### 切片大小对于切片拷贝的开销有影响吗？
+- 没有
+- 所有切片的大小相同：一个uintptr，2个int
+```go
+type SliceHeader struct {
+    Data uintptr
+    Len int
+    Cap int
+}
+```
