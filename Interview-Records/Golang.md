@@ -10,8 +10,9 @@
     - :=每次只能声明一个变量。
 
 ### new 和 make 的区别
-    - new(T) 分配内存并返回指向改内存的指针，不初始化内存（存零值）
-    - make 返回一个初始化之后的实例；对于内置的复合类型： slice, map, chan; make 会进行内存分配和初始化，而对其他类型，make 和 new一样，不初始化 
+    - new(T) 分配内存并返回指向该内存的指针，不初始化内存（存零值）
+    - make 返回一个初始化之后的实例(类型本身)；
+    - 只用于内置的复合类型： slice, map, chan; 
 
 ### defer
     - defer 用于在函数退出时释放资源： 关闭文件，释放锁
@@ -34,6 +35,7 @@
     }
     ```
     - 扩容时新建了一个新的数组
+    - If slice 的Cap还有剩余空间，此时append 不会分配新的底层容量，只是改变slice的Len，不改变Cap
 
 - Golang Slice 扩容机制如果仅仅是简单的倍增（如2倍）, 如何减少内存浪费?
     - 在初始化的时候，尽量预估所需的容量，避免频繁的扩容
@@ -107,6 +109,12 @@
         - 先通过type确定具体类型
         - 通过itab中的方法表来找到实现该接口的具体方法地址
         - 最后调用具体的实现
+    - 断言
+        ```go
+        var i interface{} = "Hello, Go!"
+
+        s, ok := i.(string)
+        ```
 
 ### map
 - 内置数据结构，存储键值对
@@ -129,6 +137,7 @@
     delete(myMap, "Apple")
     ```
 - Go的 map 不是并发安全的，如果在多个goroutine里同时读写同一个map，有可能导致错误
+    - channel是并发安全的，字符串的读是并发安全的，其他的基本数据类型都不是并发安全的
     - 解决方法：1，加一个互斥锁 sync.Mutex； 2，用并发安全的sync.Map (go 1.19 引入)
     ```go
     import (
@@ -304,7 +313,7 @@
     - 双向通信: 可以用来发送和接收数据
     - 阻塞行为
 - nil 是channel的零值，表示当前channel声明了但是尚未初始化
-    - nil channel 既不能接收数据，也不能发送数据；所以针对nil channel的接收/发送操作都会造成永久阻塞 （goroutine asleep，知道程序崩溃或被强制终止）
+    - nil channel 既不能接收数据，也不能发送数据；所以针对nil channel的接收/发送操作都会造成永久阻塞 （goroutine asleep，直到程序崩溃或被强制终止）
     - 在select中，nil channel的操作永远不会被选择
 
 
@@ -450,6 +459,12 @@ func main() {
     - 底层是通过defer链表 + panic链表实现的
 - 那些情况下会触发panic
     - 程序员显示调用panic抛出异常
+        ```go
+        func main() {
+            err := errors.New("发生了一个错误")
+            panic(err)
+        }
+        ```
     - Go程序发生运行时错误时会自动触发panic
         - 空指针（nil）引用
         - 数组/切片越界
@@ -471,11 +486,11 @@ func main() {
     - 此时：所有可达对象都被标记成了黑色； 白色对象就是不可达对象，可以被安全的回收
 - 触发机制： 堆内存每增长100%就会触发一次
 - GC缺点：GC过程占用CPU和一定的内存，频繁GC会影响性能 （尤其是在程序产生大量临时对象的时候）
-    - 即时释放引用，尽量使用局部变量
+    - 及时释放引用，尽量使用局部变量
     - 选择合适的数据结构，避免不必要的内存占用
     - 尽量复用对象，减少不必要的内存分配
 - 混合写屏障（Hybrid Write Barrier）
-    - 混合写屏障是由 Golang 在 Go 1.8 引入的，目的是确保在并发垃圾回收过程中，程序的写操作不会破坏 GC 的三色不变性。它的具体工作流程如下：
+    - 混合写屏障是由 Golang 在 Go 1.18 引入的，目的是确保在并发垃圾回收过程中，程序的写操作不会破坏 GC 的三色不变性。它的具体工作流程如下：
     - 写操作：每当程序执行写操作（例如将某个指针写入到某个对象中时），写屏障会介入。
     - 屏障拦截：写屏障在写操作发生时，会首先检查被写入的目标对象。如果目标对象尚未被标记为灰色，它会将其标记为灰色，并将其放入标记队列中。
     - 并发执行：标记阶段和写操作并发执行时，混合写屏障会持续工作，直到标记阶段完成。
@@ -620,7 +635,59 @@ func main() {
     - 网络请求的处理： 在处理HTTP请求时，可以使用Context在请求链路中传递取消信号和元数据
     - 长时间运行的任务：通过Context控制生命周期，防止资源泄露
     - 并发控制： 必要时方便通知所有相关的goroutine停止执行
+- 应用
+    ```go
+    package main
 
+    import (
+        "context"
+        "fmt"
+        "time"
+    )
+
+    func main() {
+        // 创建一个可取消的上下文
+        ctx, cancel := context.WithCancel(context.Background())
+        
+        // 创建一个2秒超时的上下文
+        // ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+        // defer cancel() // 确保资源释放
+
+        // 设置截止时间为当前时间加2秒
+        // deadline := time.Now().Add(2 * time.Second)
+        // ctx, cancel := context.WithDeadline(context.Background(), deadline)
+        // defer cancel()
+
+        // 启动一个工作goroutine，传入上下文
+        go worker(ctx, "【工作者1】")
+
+        // 主goroutine等待3秒
+        time.Sleep(3 * time.Second)
+
+        // 调用取消函数，通知工作goroutine停止
+        fmt.Println("主函数：发送取消信号")
+        cancel()
+
+        // 等待工作goroutine退出
+        time.Sleep(1 * time.Second)
+        fmt.Println("主函数：结束")
+    }
+
+    func worker(ctx context.Context, name string) {
+        for {
+            select {
+            case <-ctx.Done():
+                // 接收到取消信号/超时信号/截止时间信号，退出循环
+                fmt.Printf("%s：收到取消信号，退出\n", name)
+                return
+            default:
+                // 模拟工作
+                fmt.Printf("%s：正在工作...\n", name)
+                time.Sleep(1 * time.Second)
+            }
+        }
+    }
+    ```
 
 
 ## 并发相关
@@ -793,8 +860,7 @@ func main() {
     - 未在goroutine中监听上下文的取消信号（context.Context），导致无法及时推出
     - 多个goroutine相互等待资源，导致死锁
     - goroutine中有代码错误：无限循环
-    - 为正确关闭channel，导致receiver持续等待数据
-- 如何避免：
+    - 未正确关闭channel，导致receiver持续等待数据
 
 - 如何排查：
     在pprof交互界面中，可以使用goroutine命令查看goroutine的堆栈信息，找出未退出的goroutine。
@@ -946,3 +1012,157 @@ type SliceHeader struct {
     Cap int
 }
 ```
+
+
+### 分布式锁
+- 分布式锁是一种在分布式系统中用于控制对共享资源访问的机制，确保在同一时间只有一个节点可以访问特定的资源。它解决了在多实例、多进程环境下对共享资源进行同步访问的问题，避免了数据竞争和一致性问题。
+- 原则
+    - 互斥性（Mutual Exclusion）：在任何时候，只有一个客户端能持有锁。
+    - 无死锁（Deadlock-Free）：即使一个客户端在持有锁的过程中崩溃或网络分区，其他客户端仍然能够获取锁。
+    - 容错性（Fault Tolerance）：系统能够容忍部分节点的故障，锁服务仍然可用。
+    - 一致性（Consistency）：在分布式环境下，所有节点对于锁的状态应保持一致。
+- Golang本身未提供分布式锁实现，可以借助Redis来实现分布式锁
+    - SETNX (set if not exist) 来实现
+    - 为了避免死锁，可以设置过期时间
+    - 释放锁：执行完临界区代码后，删除锁键
+    ```go
+    package main
+
+    import (
+        "context"
+        "fmt"
+        "github.com/go-redis/redis/v8"
+        "time"
+    )
+
+    var ctx = context.Background()
+
+    func main() {
+        // 初始化 Redis 客户端
+        rdb := redis.NewClient(&redis.Options{
+            Addr: "localhost:6379", // Redis 地址
+        })
+
+        lockKey := "my_lock"
+        lockValue := "unique_value" // 可以使用 UUID
+        expiration := 10 * time.Second
+
+        // 尝试获取锁
+        success, err := rdb.SetNX(ctx, lockKey, lockValue, expiration).Result()
+        if err != nil {
+            fmt.Println("获取锁出错：", err)
+            return
+        }
+
+        if success {
+            fmt.Println("成功获取锁")
+            // 执行业务逻辑
+            doSomething()
+
+            // 释放锁
+            val, err := rdb.Get(ctx, lockKey).Result()
+            if err == nil && val == lockValue {
+                // 只有持有锁的客户端才能释放锁
+                rdb.Del(ctx, lockKey)
+                fmt.Println("锁已释放")
+            }
+        } else {
+            fmt.Println("获取锁失败，锁已被其他客户端持有")
+        }
+    }
+
+    func doSomething() {
+        fmt.Println("正在执行临界区代码...")
+        time.Sleep(5 * time.Second) // 模拟业务处理时间
+    }
+
+    ```
+
+### Go如何实现Set + 如何实现顺序读Map
+- Go 实现set，可以通过map实现，map的key唯一
+- 顺序读map，借助与slice 顺序存储map的key
+
+
+### Golang实现一个简单的线程池
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+// 定义任务类型
+type Task func()
+
+// 定义协程池结构
+type GoroutinePool struct {
+    taskQueue   chan Task  // 任务队列
+    workerCount int        // 工作协程数量
+    waitGroup   sync.WaitGroup
+}
+
+// 创建协程池
+func NewGoroutinePool(workerCount int) *GoroutinePool {
+    pool := &GoroutinePool{
+        taskQueue:   make(chan Task),
+        workerCount: workerCount,
+    }
+    pool.start()
+    return pool
+}
+
+// 启动工作协程
+func (p *GoroutinePool) start() {
+    for i := 0; i < p.workerCount; i++ {
+        p.waitGroup.Add(1)
+        go func(id int) {
+            defer p.waitGroup.Done()
+            for task := range p.taskQueue {
+                // 执行任务
+                task()
+            }
+            fmt.Printf("工作协程 %d 退出\n", id)
+        }(i)
+    }
+}
+
+// 提交任务
+func (p *GoroutinePool) Submit(task Task) {
+    p.taskQueue <- task
+}
+
+// 关闭协程池
+func (p *GoroutinePool) Shutdown() {
+    close(p.taskQueue)
+    p.waitGroup.Wait()
+}
+
+func main() {
+    // 创建协程池，设定工作协程数量为 5
+    pool := NewGoroutinePool(5)
+
+    // 提交任务
+    for i := 0; i < 20; i++ {
+        index := i // 避免闭包捕获问题
+        pool.Submit(func() {
+            fmt.Printf("任务 %d 开始执行\n", index)
+            time.Sleep(1 * time.Second) // 模拟任务耗时
+            fmt.Printf("任务 %d 执行完毕\n", index)
+        })
+    }
+
+    // 关闭协程池
+    pool.Shutdown()
+    fmt.Println("所有任务执行完毕，协程池已关闭")
+}
+
+```
+
+### Go的内存分配机制
+- 内存管理
+    - 内存分配器， 借鉴了TCMalloc
+    - 垃圾回收 GC
+    - 逃逸分析： "--gcflags=-m"
+- 栈内存 - 堆内存

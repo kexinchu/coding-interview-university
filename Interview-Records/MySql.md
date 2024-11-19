@@ -22,7 +22,7 @@
         - 联合索引，ALTER TABLE `table_name` ADD INDEX index_name ( `column1`, `column2`, `column3` ) 
     - 优化方法：
         - 为频繁查询的列创建索引，如WHERE, JOIN, ORDER BY, GROUP BY中常用的列
-        - 如果查询条件设计多个列，可以创建多个列的符合索引
+        - 如果查询条件设计多个列，可以创建多个列的联合索引
             ```sql
             CREATE INDEX idx_user_name_email ON users (name, email);
             ```

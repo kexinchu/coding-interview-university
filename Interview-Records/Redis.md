@@ -57,7 +57,7 @@
 ```shell
 EXPIRE mykey 60  # 设置key过期时间为60s
 
-EXPRIREAT mykey 1672531199   # 设置过期时间戳
+EXPIREAT mykey 1672531199   # 设置过期时间戳
 
 SET mykey "value" EX 60
 
