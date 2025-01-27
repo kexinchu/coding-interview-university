@@ -1,0 +1,136 @@
+{
+    "type": "automata",
+    "id": "article_tagger_bot",
+    "initial": "home_page_state",
+    "context": {
+        "input_url": {
+            "type": "text"
+        },
+        "searched_tag": {
+            "type": "text"
+        },
+        "article_url": {
+            "type": "text"
+        },
+        "tag": {
+            "type": "text"
+        },
+        "memory": {}
+    },
+    "transitions": {
+        "goto_tagging": "tagging_state",
+        "goto_search": "search_state",
+        "goto_input_url": "input_url_state",
+        "goto_input_tag": "input_tag_state",
+        "return_home": "home_page_state"
+    },
+    "states": {
+        "home_page_state": {
+            "type": "state",
+            "render": {
+                "text": "Welcome to the Article Tagging Bot! Select an action below.",
+                "buttons": [
+                    {
+                        "content": "Tag an Article",
+                        "description": "Input an article URL to generate tags.",
+                        "on_click": "goto_input_url"
+                    },
+                    {
+                        "content": "Search Articles",
+                        "description": "Search for articles by tags.",
+                        "on_click": "goto_input_tag"
+                    }
+                ]
+            }
+        },
+        "input_url_state": {
+            "type": "state",
+            "inputs": {
+                "input_url": {
+                    "type": "text",
+                    "user_input": true,
+                    "name": "Ariticle URL",
+                    "description": "Please enter an aritcle URL。",
+                    "default_value": "https://docs.myshell.ai/product-manual/create/pro-config-mode-beta/api-reference/atomic-state"
+                }
+            },
+            "outputs": {
+                "context.input_url": "{{input_url}}"
+            },
+            "transitions": {
+                "ALWAYS": "tagging_state"
+            }
+        },
+        "input_tag_state": {
+            "type": "state",
+            "inputs": {
+                "search_tag": {
+                    "type": "text",
+                    "user_input": true,
+                    "name": "Searching Tags",
+                    "description": "Please enter a tag here.",
+                    "default_value": "None"
+                }
+            },
+            "outputs": {
+                "context.searched_tag": "{{search_tag}}"
+            },
+            "transitions": {
+                "ALWAYS": "search_state"
+            }
+        },
+        "tagging_state": {
+            "type": "state",
+            "tasks": [
+                {
+                    "name": "generate_tag",
+                    "module_type": "AnyWidgetModule",
+                    "module_config": {
+                        "widget_id": "1744214024104448001",
+                        "system_prompt": "Analyze the following article URL and generate relevant tags:",
+                        "user_prompt": "Here is the article_url: {{context.input_url}}",
+                        "function_name": "auto_prompt",
+                        "function_description": "Generate a configuration for the bot",
+                        "function_parameters": [
+                            {
+                                "name": "tags",
+                                "type": "string",
+                                "description": "the generated tags"
+                            }
+                        ],
+                        "output_name": "results"
+                    }
+                }
+            ],
+            "outputs": {
+                "context.article_url": "{{context.input_url}}",
+                "context.tag": "{{results.tags.split(',').map(tag => tag.trim())}}",
+                "context.memory": "{{context.tag.reduce((acc, sub_tag) => { acc[sub_tag] = context.input_url; return acc; }, context.memory)}}"
+            },
+            "render": {
+                "text": "The tag of the previous article is {{context.tag}}.\n\n {{context.memory}}",
+                "buttons": [
+                    {
+                        "content": "Back to Home",
+                        "on_click": "return_home"
+                    }
+                ]
+            }
+        },
+        "search_state": {
+            "type": "state",
+            "outputs": {
+                "search_result": "Here are the articles url is:\n{{context.memory[context.searched_tag]}}"
+            },
+            "render": {
+                "text": "The matched urls is: {{search_result}}, now you can return homepage and continue",
+                "buttons": [
+                    {
+                        "content": "Back to Home",
+                        "on_click": "return_home"
+                    }
+                ]
+            }
+        }
+    }
+}
