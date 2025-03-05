@@ -122,12 +122,6 @@ const (
 
 
 ## array, slice, map
-- array - 数组
-    - 数组是定长的，长度定义之后不能修改
-    - 支持多维数组
-- slice
-    - slice 并不是真正意义上的动态数组，而是一个 <font color=#FF000>**引用类型**</font>。slice 总是指向一个底层 array，slice 的声明也可以像 array 一样，只是不需要长度。
-    <img src="./pictures/slice.png" width=400px>
 - map - 字典
     - map[keyType]valueType
     - map 是无序的，每次打印出来的 map 都会不一样，它不能通过 index 获取，而必须通过 key 获取
@@ -138,46 +132,6 @@ const (
 
 
 ```Go
-// Golang 并没有提供 Linked Lists 的数据结构
-// 全局：
-var arr0 [5]int = [5]int{1, 2, 3}
-var arr1 = [5]int{1, 2, 3, 4, 5}
-var arr2 = [...]int{1, 2, 3, 4, 5, 6}   // 根据初始化值确定数组长度
-var str = [5]string{3: "hello world", 4: "tom"}
-// 局部：
-a := [3]int{1, 2}           // 未初始化元素值为 0。
-b := [...]int{1, 2, 3, 4}   // 通过初始化值确定数组长度。
-c := [5]int{2: 100, 4: 200} // 使用索引号初始化元素。
-d := [...]struct {
-    name string
-    age  uint8
-}{
-    {"user1", 10}, // 可省略元素类型。
-    {"user2", 20}, // 别忘了最后一行的逗号。
-}
-// Note: 数组是定长的, 长度定义之后不能再修改
-
-
-// Slice 是数组的一个封装，通过内部指针和相关属性引用数组片段. (数组的引用), 也支持通过下标访问引用的数组元素. 
-// Slice 是引用类型，但是本身是结构体，还是值传递。
-// Slice实际上是一个结构体：底层的存储类型是数组
-// runtime/slice.go
-type slice struct {
-    array unsafe.Pointer // 元素指针
-    len   int // 长度 
-    cap   int // 容量
-}
-// Node: 底层数组是可以被多个 slice 同时指向的，因此对一个 slice 的元素进行操作是有可能影响到其他 slice 的。
-slice := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-s1 := slice[2:5]
-s2 := s1[2:6:7]
-
-s2 = append(s2, 100)
-s2 = append(s2, 200)
-
-s1[2] = 20
-
-
 // map
 // 声明一个 key 是字符串，值为 int 的字典, 这种方式的声明需要在使用之前使用 make 初始化
 var numbers map[string]int

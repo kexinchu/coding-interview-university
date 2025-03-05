@@ -1,0 +1,1 @@
+## Golang 并没有提供linkedList
