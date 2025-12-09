@@ -13,14 +13,7 @@
     - [x] [中央处理单元（视频）](https://youtu.be/FZGugFqdr60)
     - [x] [指令和程序（视频）](https://youtu.be/zltgXvg6r3k)
 
-## 算法复杂度 / Big-O / 渐进分析法
 
-- 并不需要实现
-- [x] [速查表（Cheat sheet）](http://bigocheatsheet.com/)
-
-<img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/bigO-for-common-data-structure-ops.jpg" width="450px">        
-
-<img src="https://github.com/kexinchu/coding-interview-university/blob/main/pictures/bigO-array-sorting-algorithms.jpg" width="300px"> 
 
 ## 数据结构
 - ### 堆栈（Stack）
